@@ -1,23 +1,28 @@
 package com.lino.dscatalog.controller;
 
+import com.lino.dscatalog.controller.services.CategoryService;
 import com.lino.dscatalog.entities.Category;
+import com.lino.dscatalog.repositories.CategoryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/api/categories")
 public class CategoryController {
 
+    @Autowired
+    private CategoryService service;
+
     @GetMapping
-    public ResponseEntity<Category> findAll() {
+    public ResponseEntity<List<Category>> findAll() {
 
-        Category category = new Category();
-        category.setName("TV");
-        category.setId(1L);
-
-        return ResponseEntity.ok().body(category);
+        List<Category> list = service.findAll();
+        return ResponseEntity.ok().body(list);
 
     }
 }
