@@ -1,8 +1,8 @@
 package com.lino.dscatalog.controller;
 
-import com.lino.dscatalog.controller.services.CategoryService;
+import com.lino.dscatalog.dto.CategoryDTO;
+import com.lino.dscatalog.services.CategoryService;
 import com.lino.dscatalog.entities.Category;
-import com.lino.dscatalog.repositories.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,9 +19,9 @@ public class CategoryController {
     private CategoryService service;
 
     @GetMapping
-    public ResponseEntity<List<Category>> findAll() {
+    public ResponseEntity<List<CategoryDTO>> findAll() {
 
-        List<Category> list = service.findAll();
+        List<CategoryDTO> list = service.findAll();
         return ResponseEntity.ok().body(list);
 
     }
