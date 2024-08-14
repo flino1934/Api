@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.Instant;
 import java.util.Optional;
 
@@ -50,6 +51,22 @@ public class ProductService {
 
         return new ProductDTO(entity);
 
+    }
+
+    @Transactional
+    public ProductDTO update(Long id, ProductDTO dto) {
+
+        try {
+
+            Product entity = repository.getOne(id);
+            copyDtoToEntity(dto, entity);
+            return new ProductDTO(entity);
+
+        } catch (EntityNotFoundException e) {
+
+            throw new ResourceNotFoundExceptions("Id Not found");
+
+        }
     }
 
     private void copyDtoToEntity(ProductDTO dto, Product entity) {
