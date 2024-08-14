@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.Optional;
 
 @Service
@@ -39,4 +40,35 @@ public class ProductService {
 
         return new ProductDTO(entity, entity.getCategories());
     }
+
+    @Transactional
+    public ProductDTO insert(ProductDTO dto) {
+
+        Product entity = new Product();
+        copyDtoToEntity(dto, entity);
+        entity = repository.save(entity);
+
+        return new ProductDTO(entity);
+
+    }
+
+    private void copyDtoToEntity(ProductDTO dto, Product entity) {
+
+        entity.setName(dto.getName());
+        entity.setPrice(dto.getPrice());
+        entity.setDescription(dto.getDescription());
+        entity.setImgUrl(dto.getImgUrl());
+        entity.setDate(Instant.now());
+
+        entity.getCategories().clear();//Limpando as categorias que possam esta armazenadas na entidade
+
+        for (CategoryDTO categoryDTO : dto.getCategories()) {//Esta percorrendo todas a categorias de CategoryDto
+
+            Category category = categoryRepository.getOne(categoryDTO.getId());//Vai carregar a categoria especifica
+            entity.getCategories().add(category);
+
+        }
+
+    }
+
 }
