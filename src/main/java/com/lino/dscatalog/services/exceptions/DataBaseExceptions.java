@@ -1,4 +1,4 @@
-package com.lino.dscatalog.services.services.exceptions;
+package com.lino.dscatalog.services.exceptions;
 
 public class DataBaseExceptions extends RuntimeException {
 

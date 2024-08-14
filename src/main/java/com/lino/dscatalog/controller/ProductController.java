@@ -1,8 +1,6 @@
 package com.lino.dscatalog.controller;
 
-import com.lino.dscatalog.dto.CategoryDTO;
 import com.lino.dscatalog.dto.ProductDTO;
-import com.lino.dscatalog.entities.Product;
 import com.lino.dscatalog.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

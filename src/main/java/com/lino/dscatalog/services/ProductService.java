@@ -6,8 +6,8 @@ import com.lino.dscatalog.entities.Category;
 import com.lino.dscatalog.entities.Product;
 import com.lino.dscatalog.repositories.CategoryRepository;
 import com.lino.dscatalog.repositories.ProductRepository;
-import com.lino.dscatalog.services.services.exceptions.DataBaseExceptions;
-import com.lino.dscatalog.services.services.exceptions.ResourceNotFoundExceptions;
+import com.lino.dscatalog.services.exceptions.DataBaseExceptions;
+import com.lino.dscatalog.services.exceptions.ResourceNotFoundExceptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -71,24 +71,25 @@ public class ProductService {
 
         }
     }
+
     @Transactional
     public void delete(Long id) {
 
-        try{
+        try {
 
             repository.deleteById(id);
 
-        }catch (
-    EmptyResultDataAccessException e) {
+        } catch (
+                EmptyResultDataAccessException e) {
 
-        throw new ResourceNotFoundExceptions("Id not found!!!");
+            throw new ResourceNotFoundExceptions("Id not found!!!");
 
-    } catch (
-    DataIntegrityViolationException e) {
+        } catch (
+                DataIntegrityViolationException e) {
 
-        throw new DataBaseExceptions("Database violation");
+            throw new DataBaseExceptions("Database violation");
 
-    }
+        }
 
     }
 

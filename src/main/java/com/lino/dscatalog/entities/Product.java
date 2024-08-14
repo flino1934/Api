@@ -1,6 +1,5 @@
 package com.lino.dscatalog.entities;
 
-import com.lino.dscatalog.dto.ProductDTO;
 
 import javax.persistence.*;
 import java.io.Serializable;

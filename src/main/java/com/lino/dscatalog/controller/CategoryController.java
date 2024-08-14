@@ -2,7 +2,6 @@ package com.lino.dscatalog.controller;
 
 import com.lino.dscatalog.dto.CategoryDTO;
 import com.lino.dscatalog.services.CategoryService;
-import com.lino.dscatalog.entities.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/categories")

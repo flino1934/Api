@@ -1,6 +1,5 @@
 package com.lino.dscatalog.controller;
 
-import com.lino.dscatalog.dto.CategoryDTO;
 import com.lino.dscatalog.dto.ClientDTO;
 import com.lino.dscatalog.services.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +25,7 @@ public class ClientController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ClientDTO> findById(@PathVariable Long id){
+    public ResponseEntity<ClientDTO> findById(@PathVariable Long id) {
 
         ClientDTO dto = service.findById(id);
         return ResponseEntity.ok().body(dto);
@@ -34,7 +33,7 @@ public class ClientController {
     }
 
     @PostMapping
-    public ResponseEntity<ClientDTO> insert(@RequestBody ClientDTO dto){
+    public ResponseEntity<ClientDTO> insert(@RequestBody ClientDTO dto) {
 
         dto = service.insert(dto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(dto.getId()).toUri();
@@ -44,15 +43,15 @@ public class ClientController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ClientDTO> update(@PathVariable Long id, @RequestBody ClientDTO dto){
+    public ResponseEntity<ClientDTO> update(@PathVariable Long id, @RequestBody ClientDTO dto) {
 
-        dto = service.update(id,dto);
+        dto = service.update(id, dto);
         return ResponseEntity.ok().body(dto);
 
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ClientDTO> delete(@PathVariable Long id ){
+    public ResponseEntity<ClientDTO> delete(@PathVariable Long id) {
 
         service.delete(id);
 
