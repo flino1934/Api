@@ -2,25 +2,34 @@ package com.lino.dscatalog.entities;
 
 import com.lino.dscatalog.dto.ProductDTO;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
-@Table(name = "tb_category")
+@Table(name = "tb_product")
 public class Product implements Serializable {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private Double price;
+    @Column(columnDefinition = "TEXT")
     private String description;
     private String imgUrl;
 
     @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
     private Instant date;
+
+    @ManyToMany//Muitos para Muitos, uma categoria pode estar em varios produtos assim como um prod de carias
+    @JoinTable(name = "tb_product_category",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
+    private Set<Category> categories = new HashSet<>();//Estamos usando Set para garantir que não haja repetição de categorias
 
     public Product(Long id, String name, Double price, String description, String imgUrl, Instant date) {
         this.id = id;
@@ -80,6 +89,18 @@ public class Product implements Serializable {
 
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
+    }
+
+    public Instant getDate() {
+        return date;
+    }
+
+    public void setDate(Instant date) {
+        this.date = date;
+    }
+
+    public Set<Category> getCategories() {
+        return categories;
     }
 
     @Override
