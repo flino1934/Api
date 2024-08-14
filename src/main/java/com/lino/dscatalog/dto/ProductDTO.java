@@ -11,34 +11,37 @@ import java.util.Set;
 
 public class ProductDTO implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     private Long id;
     private String name;
-    private Double price;
     private String description;
+    private Double price;
     private String imgUrl;
-
     private Instant date;
 
     private List<CategoryDTO> categories = new ArrayList<>();
 
     public ProductDTO() {
+
+    }
+
+    public ProductDTO(Long id, String name, String description, Double price, String imgUrl, Instant date) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.imgUrl = imgUrl;
+        this.date = date;
     }
 
     public ProductDTO(Product entity) {
         this.id = entity.getId();
         this.name = entity.getName();
-        this.price = entity.getPrice();
         this.description = entity.getDescription();
+        this.price = entity.getPrice();
         this.imgUrl = entity.getImgUrl();
-    }
-
-    public ProductDTO(Long id, String name, Double price, String description, String imgUrl, Instant date) {
-        this.id = id;
-        this.name = name;
-        this.price = price;
-        this.description = description;
-        this.imgUrl = imgUrl;
-        this.date = date;
+        this.date = entity.getDate();
     }
 
     public ProductDTO(Product entity, Set<Category> categories) {
