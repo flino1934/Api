@@ -40,14 +40,6 @@ public class Product implements Serializable {
         this.date = date;
     }
 
-    public Product(ProductDTO productDTO) {
-        this.id = productDTO.getId();
-        this.name = productDTO.getName();
-        this.price = productDTO.getPrice();
-        this.description = productDTO.getDescription();
-        this.imgUrl = productDTO.getImgUrl();
-    }
-
     public Product() {
     }
 
