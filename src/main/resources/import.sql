@@ -56,5 +56,5 @@ INSERT INTO tb_product_category (product_id, category_id) VALUES (24, 3);
 INSERT INTO tb_product_category (product_id, category_id) VALUES (25, 3);
 
 INSERT INTO tb_client (name, cpf, birth_date, children) VALUES ('Felipe Lino', '49366901808',TIMESTAMP WITH TIME ZONE '1997-06-05T10:00:00Z',0);
-INSERT INTO tb_client (name, cpf, birth_date, children) VALUES ('Michaelly Monique', '59559329847',TIMESTAMP WITH TIME ZONE '2005-06-25T14:00:00Z',0);
+INSERT INTO tb_client (name, cpf, birth_date, children) VALUES ('Michaelly Monique Di Pardo', '59559329847',TIMESTAMP WITH TIME ZONE '2005-06-25T14:00:00Z',0);
 
