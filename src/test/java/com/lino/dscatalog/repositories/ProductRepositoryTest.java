@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import java.util.Optional;
 
@@ -16,7 +17,7 @@ public class ProductRepositoryTest {
     private ProductRepository repository;
 
     @Test//Esta sendo realizado o teste do delete quando o ide existir
-    public void deleteShoulddeleteObjectWhenIdExists() {
+    public void deleteShouldDeleteObjectWhenIdExists() {
 
         //Arrange
         long existingId = 1L;
@@ -28,5 +29,15 @@ public class ProductRepositoryTest {
         Optional<Product> result = repository.findById(existingId);
         Assertions.assertFalse(result.isPresent());
 
+    }
+
+    @Test//Será testado quando o id não existir
+    public void deleteShouldThrowEmptyResultDataAccessExceptionWhenidDoesNotExists(){
+
+        long nonExistingID = 1000L;
+
+        Assertions.assertThrows(EmptyResultDataAccessException.class,()->{
+            repository.deleteById(nonExistingID);
+        });
     }
 }
