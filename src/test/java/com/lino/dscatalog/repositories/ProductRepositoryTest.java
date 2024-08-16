@@ -70,12 +70,12 @@ public class ProductRepositoryTest {
 
         //Assert
         Assertions.assertNotNull(product.getId());
-        Assertions.assertEquals(countTotalProducts +1,product.getId());
+        Assertions.assertEquals(countTotalProducts + 1, product.getId());
 
     }
 
     @Test//Vai verificar se há algum retorno quando o id existir
-    public void findByIdReturnProductWhenidExisting(){
+    public void findByIdReturnProductWhenidExisting() {
 
         //Arrange vira do beforeach que vai ser o numero do id
 
@@ -98,7 +98,34 @@ public class ProductRepositoryTest {
         //Assert
         Assertions.assertTrue(obj.isEmpty());
 
+    }
+
+    @Test//ira testar a deleção quando o id existir
+    public void deleteProductWhenIdExisting() {
+
+        //Arrange -> será feito pelo @BeforEach
+
+        //Act
+        repository.deleteById(existingId);
+
+        Optional<Product> result = repository.findById(existingId);
+        //Assert
+        Assertions.assertFalse(result.isPresent());
 
     }
+
+    @Test
+    public void emptyResultDataAccessExceptionWhenTryDeleteIdNonExisting(){
+
+        //Arrange -> sera feitop pelo @beforEach
+
+        //Assert
+        Assertions.assertThrows(EmptyResultDataAccessException.class, ()->{
+           repository.deleteById(nonExistingId);
+        });
+
+
+    }
+
 
 }

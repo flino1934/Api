@@ -79,8 +79,7 @@ public class ProductService {
 
             repository.deleteById(id);
 
-        } catch (
-                EmptyResultDataAccessException e) {
+        } catch (EmptyResultDataAccessException e) {
 
             throw new ResourceNotFoundExceptions("Id not found!!!");
 
