@@ -1,6 +1,7 @@
 package com.lino.dscatalog.repositories;
 
 import com.lino.dscatalog.entities.Product;
+import com.lino.dscatalog.factory.ProductFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,8 @@ public class ProductRepositoryTest {
     private long nonExistingId;
     private long countTotalProducts;
 
+    private Product product;
+
     @BeforeEach
     void setUp() throws Exception {
 
@@ -25,6 +28,7 @@ public class ProductRepositoryTest {
         existingId = 1L;
         nonExistingId = 1000L;
         countTotalProducts = 25L;
+        product = ProductFactory.createProduct();
     }
 
     @Autowired
@@ -52,5 +56,20 @@ public class ProductRepositoryTest {
         Assertions.assertThrows(EmptyResultDataAccessException.class, () -> {
             repository.deleteById(nonExistingId);
         });
+    }
+
+    @Test//Testando o save com id null fazendo auto increment
+    public void saveShouldPersistWithAutoIncrementWhenIdIsNull() {
+
+        //Arrange -> vira do setUp() que é o product
+        product.setId(null);
+
+        //Act
+        product = repository.save(product);
+
+        //Assert
+        Assertions.assertNotNull(product.getId());
+        Assertions.assertEquals(countTotalProducts +1,product.getId());
+
     }
 }
