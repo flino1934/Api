@@ -2,6 +2,7 @@ package com.lino.dscatalog.repositories;
 
 import com.lino.dscatalog.entities.Product;
 import com.lino.dscatalog.factory.ProductFactory;
+import com.lino.dscatalog.services.exceptions.ResourceNotFoundExceptions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -85,4 +86,19 @@ public class ProductRepositoryTest {
         Assertions.assertNotNull(obj.isPresent());
 
     }
+
+    @Test//Vai verificar se retorna a exception correta quando o id não existir
+    public void nonExistingIdShouldReturnExceptionResourceNotFoundExceptions() {
+
+        //Arrange -> vira do @BeforEach
+
+        //Act
+        Optional<Product> obj = repository.findById(nonExistingId);
+
+        //Assert
+        Assertions.assertTrue(obj.isEmpty());
+
+
+    }
+
 }
