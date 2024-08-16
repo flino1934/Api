@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.dao.EmptyResultDataAccessException;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
 @DataJpaTest//Usado para testar a camada de controller
@@ -114,18 +115,33 @@ public class ProductRepositoryTest {
 
     }
 
-    @Test
-    public void emptyResultDataAccessExceptionWhenTryDeleteIdNonExisting(){
+    @Test//ira testar o metodo delete quando o id não existir devendo retornar o exception
+    public void emptyResultDataAccessExceptionWhenTryDeleteIdNonExisting() {
 
         //Arrange -> sera feitop pelo @beforEach
 
         //Assert
-        Assertions.assertThrows(EmptyResultDataAccessException.class, ()->{
-           repository.deleteById(nonExistingId);
+        Assertions.assertThrows(EmptyResultDataAccessException.class, () -> {
+            repository.deleteById(nonExistingId);
         });
-
 
     }
 
+    @Test//ira testar quando o id existir
+    public void testUpdateWhenIdExisting() {
+
+        //Arrange -> sera feito pelo @beforEach
+        String nameUpdate = "Phone";
+
+        //Act
+        product = repository.getOne(existingId);
+        product.setName(nameUpdate);
+
+        repository.save(product);
+
+        //Assert
+        Assertions.assertEquals(nameUpdate, product.getName());
+
+    }
 
 }
