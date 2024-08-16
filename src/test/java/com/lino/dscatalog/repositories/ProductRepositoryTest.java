@@ -72,4 +72,17 @@ public class ProductRepositoryTest {
         Assertions.assertEquals(countTotalProducts +1,product.getId());
 
     }
+
+    @Test//Vai verificar se há algum retorno quando o id existir
+    public void findByIdReturnProductWhenidExisting(){
+
+        //Arrange vira do beforeach que vai ser o numero do id
+
+        //Act
+        Optional<Product> obj = repository.findById(existingId);
+
+        //Assertion
+        Assertions.assertNotNull(obj.isPresent());
+
+    }
 }
