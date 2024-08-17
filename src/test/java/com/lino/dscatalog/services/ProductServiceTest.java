@@ -3,6 +3,7 @@ package com.lino.dscatalog.services;
 import com.lino.dscatalog.entities.Product;
 import com.lino.dscatalog.factory.ProductFactory;
 import com.lino.dscatalog.repositories.ProductRepository;
+import com.lino.dscatalog.services.exceptions.DataBaseExceptions;
 import com.lino.dscatalog.services.exceptions.ResourceNotFoundExceptions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,8 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -25,6 +25,7 @@ public class ProductServiceTest {
     private ProductRepository repository;
     private long existingId;
     private long nonExistingId;
+    private long dependentId;
     private long countTotalProducts;
 
     private Product product;
@@ -46,6 +47,9 @@ public class ProductServiceTest {
         //Configurando o delete by id quando não existir
         Mockito.doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(nonExistingId);
 
+        //Configurando o delete by id com violação de integridade
+        Mockito.doThrow(DataIntegrityViolationException.class).when(repository).deleteById(dependentId);
+
     }
 
     @Test
@@ -64,10 +68,19 @@ public class ProductServiceTest {
     public void deleteShouldThrowExceptionResourceNotFoundExceptionsWhenIdNonExist(){
 
         Assertions.assertThrows(ResourceNotFoundExceptions.class, ()->{
-           service.delete(nonExistingId);
+           service.delete(nonExistingId);//Quando o JUnit rodar ele vai chamar deleteById com id inesistente do @BeforEach
         });
         Mockito.verify(repository).deleteById(nonExistingId);//Verifica se o metodo deleteById foi chamado no repository
 
+    }
+
+    @Test
+    public void deleteShouldThrowDataBaseExceptionsWhenDependentId(){
+
+        Assertions.assertThrows(DataBaseExceptions.class, ()->{
+           service.delete(dependentId);//Quando o JUnit rodar ele vai chamar deleteById com id dependente do @BeforEach
+        });
+        Mockito.verify(repository).deleteById(dependentId);//Verifica se o metodo deleteById foi chamado no repository
 
     }
 
