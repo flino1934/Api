@@ -3,6 +3,7 @@ package com.lino.dscatalog.services;
 import com.lino.dscatalog.entities.Product;
 import com.lino.dscatalog.factory.ProductFactory;
 import com.lino.dscatalog.repositories.ProductRepository;
+import com.lino.dscatalog.services.exceptions.ResourceNotFoundExceptions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,7 +49,7 @@ public class ProductServiceTest {
     }
 
     @Test
-    public void testDeleteShoulDoNothingWhenIdExist() {
+    public void testDeleteShouldDoNothingWhenIdExist() {
 
         Assertions.assertDoesNotThrow(() -> {
             service.delete(existingId);//Quando o JUnit rodar ele vai chamar deleteById do @BeforEach
@@ -56,6 +57,17 @@ public class ProductServiceTest {
         });
 
         Mockito.verify(repository).deleteById(existingId);//Verifica se o metodo deleteById foi chamado no repository
+
+    }
+
+    @Test
+    public void deleteShouldThrowExceptionResourceNotFoundExceptionsWhenIdNonExist(){
+
+        Assertions.assertThrows(ResourceNotFoundExceptions.class, ()->{
+           service.delete(nonExistingId);
+        });
+        Mockito.verify(repository).deleteById(nonExistingId);//Verifica se o metodo deleteById foi chamado no repository
+
 
     }
 
