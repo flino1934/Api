@@ -9,12 +9,19 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import java.util.List;
+import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)//usado para fazer teste do service
 public class ProductServiceTest {
@@ -27,6 +34,7 @@ public class ProductServiceTest {
     private long nonExistingId;
     private long dependentId;
     private long countTotalProducts;
+    private PageImpl<Product> page;
 
     private Product product;
 
@@ -38,6 +46,7 @@ public class ProductServiceTest {
         nonExistingId = 1000L;
         countTotalProducts = 25L;
         product = ProductFactory.createProduct();
+        page = new PageImpl<>(List.of(product));
 
         //================= Configurando o comportamento simulado do repository ==============================
 
@@ -49,6 +58,18 @@ public class ProductServiceTest {
 
         //Configurando o delete by id com violação de integridade
         Mockito.doThrow(DataIntegrityViolationException.class).when(repository).deleteById(dependentId);
+
+        //Configurando o find all paged
+        Mockito.when(repository.findAll((Pageable) ArgumentMatchers.any())).thenReturn(page);
+
+        //Configurando o findById quando o id existir
+        Mockito.when(repository.findById(existingId)).thenReturn(Optional.of(product));
+
+        //Configurando o findById quando o id não existir
+        Mockito.when(repository.findById(nonExistingId)).thenReturn(Optional.empty());
+
+        //Configurando save
+        Mockito.when(repository.save(ArgumentMatchers.any())).thenReturn(product);
 
     }
 
@@ -65,20 +86,20 @@ public class ProductServiceTest {
     }
 
     @Test
-    public void deleteShouldThrowExceptionResourceNotFoundExceptionsWhenIdNonExist(){
+    public void deleteShouldThrowExceptionResourceNotFoundExceptionsWhenIdNonExist() {
 
-        Assertions.assertThrows(ResourceNotFoundExceptions.class, ()->{
-           service.delete(nonExistingId);//Quando o JUnit rodar ele vai chamar deleteById com id inesistente do @BeforEach
+        Assertions.assertThrows(ResourceNotFoundExceptions.class, () -> {
+            service.delete(nonExistingId);//Quando o JUnit rodar ele vai chamar deleteById com id inesistente do @BeforEach
         });
         Mockito.verify(repository).deleteById(nonExistingId);//Verifica se o metodo deleteById foi chamado no repository
 
     }
 
     @Test
-    public void deleteShouldThrowDataBaseExceptionsWhenDependentId(){
+    public void deleteShouldThrowDataBaseExceptionsWhenDependentId() {
 
-        Assertions.assertThrows(DataBaseExceptions.class, ()->{
-           service.delete(dependentId);//Quando o JUnit rodar ele vai chamar deleteById com id dependente do @BeforEach
+        Assertions.assertThrows(DataBaseExceptions.class, () -> {
+            service.delete(dependentId);//Quando o JUnit rodar ele vai chamar deleteById com id dependente do @BeforEach
         });
         Mockito.verify(repository).deleteById(dependentId);//Verifica se o metodo deleteById foi chamado no repository
 
