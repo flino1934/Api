@@ -196,9 +196,9 @@ public class ProductServiceTest {
     }
 
     @Test
-    public void testUpdateWhenIdDoesNotExistThenReturnResourceNotFoundExceptions(){
+    public void testUpdateWhenIdDoesNotExistThenReturnResourceNotFoundExceptions() {
 
-        Assertions.assertThrows(ResourceNotFoundExceptions.class, ()->{
+        Assertions.assertThrows(ResourceNotFoundExceptions.class, () -> {
 
             service.update(nonExistingId, productDTO);
 
@@ -207,5 +207,19 @@ public class ProductServiceTest {
 
     }
 
+    @Test
+    public void testInsertShouldReturnProduct() {
+
+        ////Arrange
+        //O arrange esta sendo feito no beforEach
+
+        //Act
+        ProductDTO result = service.insert(productDTO);
+
+        //Assert
+        Assertions.assertNotNull(result);
+        Mockito.verify(repository).save(product);
+
+    }
 
 }
