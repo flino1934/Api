@@ -39,6 +39,7 @@ public class ProductServiceTest {
     private PageImpl<Product> page;
 
     private Product product;
+    private ProductDTO productDTO;
 
     @BeforeEach
     void setUp() throws Exception {
@@ -48,6 +49,7 @@ public class ProductServiceTest {
         nonExistingId = 1000L;
         countTotalProducts = 25L;
         product = ProductFactory.createProduct();
+        productDTO = ProductFactory.createProductDTO();
         page = new PageImpl<>(List.of(product));
 
         //================= Configurando o comportamento simulado do repository ==============================
@@ -108,10 +110,10 @@ public class ProductServiceTest {
     }
 
     @Test
-    public void findByIdWhenIdExistShouldReturnPage(){
+    public void findByIdWhenIdExistShouldReturnPage() {
 
         //Arrange
-        Pageable pageable = PageRequest.of(0,10);
+        Pageable pageable = PageRequest.of(0, 10);
 
         //Act
         Page<ProductDTO> result = service.findAllPaged(pageable);
@@ -121,5 +123,19 @@ public class ProductServiceTest {
         Mockito.verify(repository).findAll(pageable);
 
 
+    }
+
+    @Test
+    public void testFindByIdWhenIdExistShouldReturnProduct() {
+
+        //Arrange
+        //
+
+        //Act
+        ProductDTO obj = service.findById(existingId);
+
+        //Assert
+        Assertions.assertNotNull(obj);
+        Mockito.verify(repository).findById(existingId);
     }
 }
