@@ -1,5 +1,6 @@
 package com.lino.dscatalog.services;
 
+import com.lino.dscatalog.dto.ProductDTO;
 import com.lino.dscatalog.entities.Product;
 import com.lino.dscatalog.factory.ProductFactory;
 import com.lino.dscatalog.repositories.ProductRepository;
@@ -17,6 +18,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -105,5 +107,19 @@ public class ProductServiceTest {
 
     }
 
+    @Test
+    public void findByIdWhenIdExistShouldReturnPage(){
 
+        //Arrange
+        Pageable pageable = PageRequest.of(0,10);
+
+        //Act
+        Page<ProductDTO> result = service.findAllPaged(pageable);
+
+        //Assert
+        Assertions.assertNotNull(result);
+        Mockito.verify(repository).findAll(pageable);
+
+
+    }
 }
