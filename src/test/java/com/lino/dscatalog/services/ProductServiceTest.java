@@ -1,8 +1,12 @@
 package com.lino.dscatalog.services;
 
+import com.lino.dscatalog.dto.CategoryDTO;
 import com.lino.dscatalog.dto.ProductDTO;
+import com.lino.dscatalog.entities.Category;
 import com.lino.dscatalog.entities.Product;
+import com.lino.dscatalog.factory.CategoryFactory;
 import com.lino.dscatalog.factory.ProductFactory;
+import com.lino.dscatalog.repositories.CategoryRepository;
 import com.lino.dscatalog.repositories.ProductRepository;
 import com.lino.dscatalog.services.exceptions.DataBaseExceptions;
 import com.lino.dscatalog.services.exceptions.ResourceNotFoundExceptions;
@@ -22,6 +26,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,6 +37,8 @@ public class ProductServiceTest {
     private ProductService service;
     @Mock//Essa anotação utiliza quando não precisa carregar o contexto da app pq esta utilizando o @ExtendWith
     private ProductRepository repository;
+    @Mock//Essa anotação utiliza quando não precisa carregar o contexto da app pq esta utilizando o @ExtendWith
+    private CategoryRepository categoryRepository;
     private long existingId;
     private long nonExistingId;
     private long dependentId;
@@ -40,6 +47,8 @@ public class ProductServiceTest {
 
     private Product product;
     private ProductDTO productDTO;
+    private Category category;
+    private CategoryDTO categoryDTO;
 
     @BeforeEach
     void setUp() throws Exception {
@@ -50,6 +59,8 @@ public class ProductServiceTest {
         countTotalProducts = 25L;
         product = ProductFactory.createProduct();
         productDTO = ProductFactory.createProductDTO();
+        category = CategoryFactory.createCategory();
+        categoryDTO = CategoryFactory.createCategoryDTO();
         page = new PageImpl<>(List.of(product));
 
         //================= Configurando o comportamento simulado do repository ==============================
@@ -71,6 +82,18 @@ public class ProductServiceTest {
 
         //Configurando o findById quando o id não existir
         Mockito.when(repository.findById(nonExistingId)).thenReturn(Optional.empty());
+
+        //Simulando o get One id existente
+        Mockito.when(repository.getOne(existingId)).thenReturn(product);
+
+        //Simulando o get One id não existente
+        Mockito.when(repository.getOne(nonExistingId)).thenThrow(EntityNotFoundException.class);
+
+        //Simulando o get One id existente
+        Mockito.when(categoryRepository.getOne(existingId)).thenReturn(category);
+
+        //Simulando o get One id não existente
+        Mockito.when(categoryRepository.getOne(nonExistingId)).thenThrow(EntityNotFoundException.class);
 
         //Configurando save
         Mockito.when(repository.save(ArgumentMatchers.any())).thenReturn(product);
@@ -155,4 +178,20 @@ public class ProductServiceTest {
         Mockito.verify(repository).findById(nonExistingId);
 
     }
+
+    @Test
+    public void testShouldUpdatedProductWhenIdExistsThenReturnProduct() {
+
+        //Arrange
+        //O arrange esta sendo feito no beforEach vai chamar o get onde de product e category
+
+        //Act
+        ProductDTO result = service.update(existingId, productDTO);
+
+        //Assertion
+        Assertions.assertNotNull(result);
+
+    }
+
+
 }
