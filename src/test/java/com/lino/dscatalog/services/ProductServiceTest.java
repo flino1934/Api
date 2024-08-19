@@ -191,6 +191,20 @@ public class ProductServiceTest {
         //Assertion
         Assertions.assertNotNull(result);
 
+        Mockito.verify(repository).getOne(existingId);
+
+    }
+
+    @Test
+    public void testUpdateWhenIdDoesNotExistThenReturnResourceNotFoundExceptions(){
+
+        Assertions.assertThrows(ResourceNotFoundExceptions.class, ()->{
+
+            service.update(nonExistingId, productDTO);
+
+        });
+        Mockito.verify(repository).getOne(nonExistingId);
+
     }
 
 
