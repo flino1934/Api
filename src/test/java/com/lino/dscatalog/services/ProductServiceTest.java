@@ -129,7 +129,7 @@ public class ProductServiceTest {
     public void testFindByIdWhenIdExistShouldReturnProduct() {
 
         //Arrange
-        //
+        //O arrange esta sendo feito no beforEach
 
         //Act
         ProductDTO obj = service.findById(existingId);
@@ -137,5 +137,22 @@ public class ProductServiceTest {
         //Assert
         Assertions.assertNotNull(obj);
         Mockito.verify(repository).findById(existingId);
+    }
+
+    @Test
+    public void testFindByIdWhenIdDoesNotExistShouldReturnResourceNotFoundExceptions() {
+
+        //Arrange
+        //O arrange esta sendo feito no beforEach
+
+        //Assertion
+        Assertions.assertThrows(ResourceNotFoundExceptions.class, () -> {
+
+            //Act
+            service.findById(nonExistingId);
+
+        });
+        Mockito.verify(repository).findById(nonExistingId);
+
     }
 }
