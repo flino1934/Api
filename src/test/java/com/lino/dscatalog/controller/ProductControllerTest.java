@@ -45,13 +45,9 @@ public class ProductControllerTest {
     private long existingId;
     private long nonExistingId;
     private long dependentId;
-    private long countTotalProducts;
     private PageImpl<ProductDTO> page;
 
-    private Product product;
     private ProductDTO productDTO;
-    private Category category;
-    private CategoryDTO categoryDTO;
 
     @BeforeEach
     void setUp() throws Exception {
@@ -60,11 +56,7 @@ public class ProductControllerTest {
         existingId = 1L;
         nonExistingId = 1000L;
         dependentId = 23L;
-        countTotalProducts = 25L;
-        product = ProductFactory.createProduct();
         productDTO = ProductFactory.createProductDTO();
-        category = CategoryFactory.createCategory();
-        categoryDTO = CategoryFactory.createCategoryDTO();
         page = new PageImpl<>(List.of(productDTO));
 
         //Simulando os comprtamentos do service
