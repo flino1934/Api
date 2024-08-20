@@ -120,7 +120,7 @@ public class ProductControllerTest {
     }
 
     @Test
-    public void updateShouldReturnProductDTOwhenIdExist() throws Exception {
+    public void updateShouldReturnProductDTOWhenIdExist() throws Exception {
 
         String jsonBody = objectMapper.writeValueAsString(productDTO);
 
@@ -133,6 +133,20 @@ public class ProductControllerTest {
         result.andExpect(status().isOk());
         result.andExpect(jsonPath("$.name").exists());
         result.andExpect(jsonPath("$.description").exists());
+
+    }
+    @Test
+    public void updateShouldReturnNotFoundWhenIdDoesNotExist() throws Exception {
+
+        String jsonBody = objectMapper.writeValueAsString(productDTO);
+
+        ResultActions result =
+                mockMvc.perform(put("/api/products/{id}", nonExistingId)
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        result.andExpect(status().isNotFound());
 
     }
 
