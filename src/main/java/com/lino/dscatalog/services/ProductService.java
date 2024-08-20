@@ -83,8 +83,7 @@ public class ProductService {
 
             throw new ResourceNotFoundExceptions("Id not found!!!");
 
-        } catch (
-                DataIntegrityViolationException e) {
+        } catch (DataIntegrityViolationException e) {
 
             throw new DataBaseExceptions("Database violation");
 
