@@ -1,4 +1,4 @@
-package com.lino.dscatalog;
+package com.lino.dscatalog.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lino.dscatalog.dto.CategoryDTO;
@@ -9,6 +9,7 @@ import com.lino.dscatalog.factory.CategoryFactory;
 import com.lino.dscatalog.factory.ProductFactory;
 import com.lino.dscatalog.repositories.ProductRepository;
 import com.lino.dscatalog.services.ProductService;
+import com.lino.dscatalog.services.exceptions.ResourceNotFoundExceptions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -66,6 +67,19 @@ public class ProductServiceTestIT {
 
         //Assertions
         Assertions.assertEquals(countTotalProducts -1, repository.count());
+
+
+    }
+
+    @Test
+    public void deleteShouldThrowResourceNotFoundExceptionsWhenIdDoesNotExist(){
+
+        //Arrange essta sendo feito no beforeach
+
+        //Assertions
+        Assertions.assertThrows(ResourceNotFoundExceptions.class, () -> {
+            service.delete(nonExistingId);//Quando o JUnit rodar ele vai chamar deleteById com id inesistente do @BeforEach
+        });
 
 
     }
