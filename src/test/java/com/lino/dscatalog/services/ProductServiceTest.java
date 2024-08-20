@@ -42,7 +42,6 @@ public class ProductServiceTest {
     private long existingId;
     private long nonExistingId;
     private long dependentId;
-    private long countTotalProducts;
     private PageImpl<Product> page;
 
     private Product product;
@@ -56,7 +55,7 @@ public class ProductServiceTest {
         //Estara fazendo o Arrange
         existingId = 1L;
         nonExistingId = 1000L;
-        countTotalProducts = 25L;
+        dependentId = 22L;
         product = ProductFactory.createProduct();
         productDTO = ProductFactory.createProductDTO();
         category = CategoryFactory.createCategory();
