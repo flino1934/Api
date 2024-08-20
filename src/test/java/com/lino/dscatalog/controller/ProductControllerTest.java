@@ -12,6 +12,7 @@ import com.lino.dscatalog.entities.Product;
 import com.lino.dscatalog.factory.CategoryFactory;
 import com.lino.dscatalog.factory.ProductFactory;
 import com.lino.dscatalog.services.ProductService;
+import com.lino.dscatalog.services.exceptions.DataBaseExceptions;
 import com.lino.dscatalog.services.exceptions.ResourceNotFoundExceptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -87,10 +88,10 @@ public class ProductControllerTest {
         Mockito.doNothing().when(service).delete(existingId);
 
         //Simulando quando o id não existir e retornar ResourceNotFoundExceptions
-        Mockito.doThrow(EmptyResultDataAccessException.class).when(service).delete(nonExistingId);
+        Mockito.doThrow(ResourceNotFoundExceptions.class).when(service).delete(nonExistingId);
 
         //Simulando quando o id não existir e retornar DataIntegrityViolationException
-        Mockito.doThrow(DataIntegrityViolationException.class).when(service).delete(dependentId);
+        Mockito.doThrow(DataBaseExceptions.class).when(service).delete(dependentId);
 
         //Simulando o insert
         Mockito.when(service.insert(ArgumentMatchers.any())).thenReturn(productDTO);
@@ -180,6 +181,38 @@ public class ProductControllerTest {
         result.andExpect(jsonPath("$.name").exists());
         result.andExpect(jsonPath("$.description").exists());
 
+    }
+
+    @Test
+    public void testDeleteShouldReturnNoContentWhenIdExist() throws Exception {
+
+        ResultActions result =
+                mockMvc.perform(delete("/api/products/{id}", existingId)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        result.andExpect(status().isNoContent());
+
+    }
+
+    @Test
+    public void testDeleteShouldReturnNotFoundWhenIdDoesNotExist() throws Exception {
+
+        ResultActions result =
+                mockMvc.perform(delete("/api/products/{id}", nonExistingId)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        result.andExpect(status().isNotFound());
+
+    }
+
+    @Test
+    public void testDeleteShouldReturnNotFoundWhenIdDoesNotExistException() throws Exception {
+
+        ResultActions result =
+                mockMvc.perform(delete("/api/products/{id}", dependentId)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        result.andExpect(status().isBadRequest());
 
     }
 
