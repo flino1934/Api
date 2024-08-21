@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootTest
 @Transactional
@@ -99,10 +100,11 @@ public class ProductServiceTestIT {
 
         //Assertion
         Assertions.assertFalse(result.isEmpty());
-        Assertions.assertEquals(0,result.getNumber());
-        Assertions.assertEquals(countTotalProducts,result.getTotalElements());
+        Assertions.assertEquals(0, result.getNumber());
+        Assertions.assertEquals(countTotalProducts, result.getTotalElements());
 
     }
+
     @Test
     public void findAllPagedShouldReturnEmptyPageWhenPageDoesNotExist() {
 
@@ -116,6 +118,7 @@ public class ProductServiceTestIT {
         Assertions.assertTrue(result.isEmpty());
 
     }
+
     @Test
     public void findAllPagedShouldReturnOrdenedPageWhenSortByName() {
 
@@ -126,14 +129,22 @@ public class ProductServiceTestIT {
         Page<ProductDTO> result = service.findAllPaged(pageRequest);
 
         //Assertion
-        Assertions.assertEquals("Macbook Pro",result.getContent().get(0).getName());
-        Assertions.assertEquals("PC Gamer",result.getContent().get(1).getName());
-        Assertions.assertEquals("PC Gamer Alfa",result.getContent().get(2).getName());
+        Assertions.assertEquals("Macbook Pro", result.getContent().get(0).getName());
+        Assertions.assertEquals("PC Gamer", result.getContent().get(1).getName());
+        Assertions.assertEquals("PC Gamer Alfa", result.getContent().get(2).getName());
 
     }
 
     @Test
-    public void findByIDWhenIdExistReturnProduct(){
+    public void findByIDWhenIdExistReturnProduct() {
+
+        //Arrange esta sendo feito no beforeach
+
+        //ACT
+        ProductDTO product = service.findById(existingId);
+
+        //Assert
+        Assertions.assertNotNull(product);
 
     }
 
