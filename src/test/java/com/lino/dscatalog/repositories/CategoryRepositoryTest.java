@@ -5,6 +5,7 @@ import com.lino.dscatalog.entities.Category;
 import com.lino.dscatalog.entities.Product;
 import com.lino.dscatalog.factory.CategoryFactory;
 import com.lino.dscatalog.factory.ProductFactory;
+import com.lino.dscatalog.services.exceptions.ResourceNotFoundExceptions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+
+import java.util.Optional;
 
 @DataJpaTest
 public class CategoryRepositoryTest {
@@ -49,5 +52,31 @@ private Category category;
         Assertions.assertNotNull(result);
 
     }
+
+    @Test
+    public void testFindByIdWhenIdExistShouldReturnCategory(){
+
+        //Arrange
+
+        //Act
+        Optional<Category> result = repository.findById(existingId);
+
+        //Assert
+        Assertions.assertNotNull(result.isPresent());
+    }
+
+    @Test
+    public void testFindByIdWhenIdDoesNotExistShouldReturnResourceNotFoundExceptions(){
+
+        //Act
+        Optional<Category> result = repository.findById(nonExistingId);
+
+        //Assert
+        Assertions.assertTrue(result.isEmpty());
+
+
+    }
+
+
 
 }
