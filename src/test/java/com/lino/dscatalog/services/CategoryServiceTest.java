@@ -7,6 +7,7 @@ import com.lino.dscatalog.entities.Product;
 import com.lino.dscatalog.factory.CategoryFactory;
 import com.lino.dscatalog.factory.ProductFactory;
 import com.lino.dscatalog.repositories.CategoryRepository;
+import com.lino.dscatalog.services.exceptions.ResourceNotFoundExceptions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)//usado para fazer teste do service
 public class CategoryServiceTest {
@@ -55,7 +57,14 @@ public class CategoryServiceTest {
         categoryDTO = CategoryFactory.createCategoryDTO();
         page = new PageImpl<>(List.of(category));
 
+        //Esta simulando o comportamento do repository do find all paged
         Mockito.when(repository.findAll((Pageable) ArgumentMatchers.any())).thenReturn(page);
+
+        //Esta simulando o comportamento do repository do find by id
+        Mockito.when(repository.findById(existingId)).thenReturn(Optional.of(category));
+
+        //Esta simulando o comportamento do find by id quando o id não existir
+        Mockito.when(repository.findById(nonExistingId)).thenThrow(ResourceNotFoundExceptions.class);
 
     }
 
@@ -74,6 +83,30 @@ public class CategoryServiceTest {
 
     }
 
+    @Test
+    public void testFindByIdWhenIdExistReturnCategory(){
 
+        //Arrange
+
+        //Act
+        CategoryDTO result = service.findById(existingId);
+
+        //Assertion
+        Assertions.assertNotNull(result);
+        Mockito.verify(repository).findById(existingId);
+    }
+
+    @Test
+    public void testFindByIdWhenIdDoesNotExistShouldReturnResourceNotFoundExceptions(){
+
+        Assertions.assertThrows(ResourceNotFoundExceptions.class, ()->{
+
+            service.findById(nonExistingId);
+
+        });
+
+        Mockito.verify(repository).findById(nonExistingId);
+
+    }
 
 }
