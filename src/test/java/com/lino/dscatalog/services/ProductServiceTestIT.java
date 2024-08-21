@@ -16,12 +16,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @SpringBootTest
+@Transactional
 public class ProductServiceTestIT {
 
     @Autowired
@@ -58,7 +63,7 @@ public class ProductServiceTestIT {
     }
 
     @Test
-    public void deleteShouldDeleteResourceWhenIdExist(){
+    public void deleteShouldDeleteResourceWhenIdExist() {
 
         //Arrange essta sendo feito no beforeach
 
@@ -66,13 +71,13 @@ public class ProductServiceTestIT {
         service.delete(existingId);
 
         //Assertions
-        Assertions.assertEquals(countTotalProducts -1, repository.count());
+        Assertions.assertEquals(countTotalProducts - 1, repository.count());
 
 
     }
 
     @Test
-    public void deleteShouldThrowResourceNotFoundExceptionsWhenIdDoesNotExist(){
+    public void deleteShouldThrowResourceNotFoundExceptionsWhenIdDoesNotExist() {
 
         //Arrange essta sendo feito no beforeach
 
@@ -81,7 +86,56 @@ public class ProductServiceTestIT {
             service.delete(nonExistingId);//Quando o JUnit rodar ele vai chamar deleteById com id inesistente do @BeforEach
         });
 
+    }
+
+    @Test
+    public void findAllPagedShouldReturnPageWhenPageZeroSizeTen() {
+
+        //Arrange
+        PageRequest pageRequest = PageRequest.of(0, 10);
+
+        //Act
+        Page<ProductDTO> result = service.findAllPaged(pageRequest);
+
+        //Assertion
+        Assertions.assertFalse(result.isEmpty());
+        Assertions.assertEquals(0,result.getNumber());
+        Assertions.assertEquals(countTotalProducts,result.getTotalElements());
 
     }
+    @Test
+    public void findAllPagedShouldReturnEmptyPageWhenPageDoesNotExist() {
+
+        //Arrange
+        PageRequest pageRequest = PageRequest.of(50, 10);
+
+        //Act
+        Page<ProductDTO> result = service.findAllPaged(pageRequest);
+
+        //Assertion
+        Assertions.assertTrue(result.isEmpty());
+
+    }
+    @Test
+    public void findAllPagedShouldReturnOrdenedPageWhenSortByName() {
+
+        //Arrange
+        PageRequest pageRequest = PageRequest.of(0, 10, Sort.by("name"));
+
+        //Act
+        Page<ProductDTO> result = service.findAllPaged(pageRequest);
+
+        //Assertion
+        Assertions.assertEquals("Macbook Pro",result.getContent().get(0).getName());
+        Assertions.assertEquals("PC Gamer",result.getContent().get(1).getName());
+        Assertions.assertEquals("PC Gamer Alfa",result.getContent().get(2).getName());
+
+    }
+
+    @Test
+    public void findByIDWhenIdExistReturnProduct(){
+
+    }
+
 
 }
