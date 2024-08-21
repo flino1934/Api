@@ -36,7 +36,7 @@ public class CategoryServiceTest {
 
     private long existingId;
     private long nonExistingId;
-    private long dependentId;
+    private long totalCounts;
     private PageImpl<Category> page;
 
     private Product product;
@@ -50,7 +50,7 @@ public class CategoryServiceTest {
         //Estara fazendo o Arrange
         existingId = 1L;
         nonExistingId = 1000L;
-        dependentId = 22L;
+        totalCounts = 3L;
         product = ProductFactory.createProductTestService();
         productDTO = ProductFactory.createProductDTOTestService();
         category = CategoryFactory.createCategory();
@@ -65,6 +65,11 @@ public class CategoryServiceTest {
 
         //Esta simulando o comportamento do find by id quando o id não existir
         Mockito.when(repository.findById(nonExistingId)).thenThrow(ResourceNotFoundExceptions.class);
+
+        //Esta simulando o comportamnet do insert
+        Mockito.when(repository.save(ArgumentMatchers.any())).thenReturn(category);
+
+
 
     }
 
@@ -106,6 +111,18 @@ public class CategoryServiceTest {
         });
 
         Mockito.verify(repository).findById(nonExistingId);
+
+    }
+
+    @Test
+    public void testSaveCategoryShouldReturnCategory(){
+
+        //Act
+        CategoryDTO insert = service.insert(categoryDTO);
+
+        //Assertions
+        Assertions.assertNotNull(insert);
+        Mockito.verify(repository).save(category);
 
     }
 
