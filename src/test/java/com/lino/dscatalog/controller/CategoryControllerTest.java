@@ -81,6 +81,12 @@ public class CategoryControllerTest {
         //Vai simular o delete quando o id for dependete e vai lançar DataBaseExceptions
         Mockito.doThrow(DataBaseExceptions.class).when(service).delete(dependentId);
 
+        //Vai simular o get one de quandop o id eixistir para fazer o update
+        Mockito.when(service.update(ArgumentMatchers.eq(existingId), ArgumentMatchers.any())).thenReturn(categoryDTO);
+
+        //Vai simular o get one de quandop o id não eixistir e lanãr uma exception
+        Mockito.when(service.update(ArgumentMatchers.eq(nonExistingId), ArgumentMatchers.any())).thenThrow(ResourceNotFoundExceptions.class);
+
     }
 
     @Test
@@ -161,6 +167,38 @@ public class CategoryControllerTest {
                         .accept(MediaType.APPLICATION_JSON));
 
         result.andExpect(status().isBadRequest());
+
+    }
+
+    @Test
+    public void testUpdateWhenIdExist() throws Exception{
+
+        String jsonBody = objectMapper.writeValueAsString(categoryDTO);
+
+        ResultActions result =
+                mockMvc.perform(put("/api/categories/{id}",existingId)
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        result.andExpect(status().isOk());
+        result.andExpect(jsonPath("$.name").exists());
+
+    }
+
+    @Test
+    public void testUpdateWhenIdDoesNothingExistShoulReturnThrowResourceNotFoundExceptions() throws Exception{
+
+
+        String jsonBody = objectMapper.writeValueAsString(categoryDTO);
+
+        ResultActions result =
+                mockMvc.perform(put("/api/categories/{id}",nonExistingId)
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        result.andExpect(status().isNotFound());
 
     }
 
