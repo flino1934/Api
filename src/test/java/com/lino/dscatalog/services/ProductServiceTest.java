@@ -33,7 +33,7 @@ import java.util.Optional;
 @ExtendWith(SpringExtension.class)//usado para fazer teste do service
 public class ProductServiceTest {
 
-    @InjectMocks//Essa anotação utiliza para
+    @InjectMocks//Essa anotação utiliza para injetar o service já que não precisa carregar o contexto
     private ProductService service;
     @Mock//Essa anotação utiliza quando não precisa carregar o contexto da app pq esta utilizando o @ExtendWith
     private ProductRepository repository;
