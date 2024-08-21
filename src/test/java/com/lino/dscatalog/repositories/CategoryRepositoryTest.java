@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,24 +25,27 @@ public class CategoryRepositoryTest {
 
     private long existingId;
     private long nonExistingId;
+    private long dependentId;
     private long countTotalProducts;
 
     @Autowired
     private CategoryRepository repository;
 
-private Category category;
+    private Category category;
+
     @BeforeEach
     void setUp() throws Exception {
 
         //Estara fazendo o Arrange
         existingId = 1L;
         nonExistingId = 1000L;
+        dependentId = 3L;
         countTotalProducts = 25L;
         category = CategoryFactory.createCategory();
     }
 
     @Test
-    public void testFindAllPaged(){
+    public void testFindAllPaged() {
 
         //Arrange
         Pageable pageable = PageRequest.of(0, 10);
@@ -54,7 +59,7 @@ private Category category;
     }
 
     @Test
-    public void testFindByIdWhenIdExistShouldReturnCategory(){
+    public void testFindByIdWhenIdExistShouldReturnCategory() {
 
         //Arrange
 
@@ -66,7 +71,7 @@ private Category category;
     }
 
     @Test
-    public void testFindByIdWhenIdDoesNotExistShouldReturnResourceNotFoundExceptions(){
+    public void testFindByIdWhenIdDoesNotExistShouldReturnResourceNotFoundExceptions() {
 
         //Act
         Optional<Category> result = repository.findById(nonExistingId);
@@ -77,6 +82,24 @@ private Category category;
 
     }
 
+    @Test
+    public void testDeleteWhenIdExist() {
 
+        repository.deleteById(existingId);
+
+        Optional<Category> result = repository.findById(existingId);
+
+        Assertions.assertTrue(result.isEmpty());
+
+    }
+
+    @Test
+    public void testDeleteWhenIdDoesNotExistShoulReturnThrowEmptyResultDataAccessException() {
+
+        Assertions.assertThrows(EmptyResultDataAccessException.class, () -> {
+            repository.deleteById(nonExistingId);
+        });
+
+    }
 
 }
