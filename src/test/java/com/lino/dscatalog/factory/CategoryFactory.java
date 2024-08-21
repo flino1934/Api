@@ -19,4 +19,18 @@ public class CategoryFactory {
 
     }
 
+    public static Category createCategoryRepository() {
+        Category category = new Category(1L, "Livros");
+        return category;
+
+    }
+
+    public static CategoryDTO createCategoryDTORepository() {
+
+        Category category = createCategoryRepository();
+
+        return new CategoryDTO(category);
+
+    }
+
 }
