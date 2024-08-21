@@ -1,5 +1,6 @@
 package com.lino.dscatalog.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lino.dscatalog.dto.CategoryDTO;
 import com.lino.dscatalog.dto.ProductDTO;
@@ -22,7 +23,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.List;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -62,8 +63,13 @@ public class CategoryControllerTest {
 
         //Vai simular o find by id quando o id existir
         Mockito.when(service.findById(existingId)).thenReturn(categoryDTO);
+
         //Vai simular o find by id quando o não id existir e deve retornar ResourceNotFoundExceptions
         Mockito.when(service.findById(nonExistingId)).thenThrow(ResourceNotFoundExceptions.class);
+
+        //Vai simular o insert
+        Mockito.when(service.insert(ArgumentMatchers.any())).thenReturn(categoryDTO);
+
     }
 
     @Test
@@ -97,6 +103,21 @@ public class CategoryControllerTest {
                         .accept(MediaType.APPLICATION_JSON));
 
         result.andExpect(status().isNotFound());
+
+    }
+
+    @Test
+    public void testInsertShoulReturnCategory() throws Exception {
+
+        String jsonBody = objectMapper.writeValueAsString(categoryDTO);
+
+        ResultActions result =
+                mockMvc.perform(post("/api/categories")
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        result.andExpect(status().isCreated());
 
     }
 
