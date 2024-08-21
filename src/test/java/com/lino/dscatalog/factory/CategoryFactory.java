@@ -2,9 +2,6 @@ package com.lino.dscatalog.factory;
 
 import com.lino.dscatalog.dto.CategoryDTO;
 import com.lino.dscatalog.entities.Category;
-import com.lino.dscatalog.entities.Category;
-
-import java.time.Instant;
 
 public class CategoryFactory {
 

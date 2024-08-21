@@ -2,16 +2,13 @@ package com.lino.dscatalog.repositories;
 
 import com.lino.dscatalog.entities.Product;
 import com.lino.dscatalog.factory.ProductFactory;
-import com.lino.dscatalog.services.exceptions.ResourceNotFoundExceptions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.dao.EmptyResultDataAccessException;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
 @DataJpaTest//Usado para testar a camada de controller
