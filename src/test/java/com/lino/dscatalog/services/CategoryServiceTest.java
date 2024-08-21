@@ -22,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,7 +70,11 @@ public class CategoryServiceTest {
         //Esta simulando o comportamnet do insert
         Mockito.when(repository.save(ArgumentMatchers.any())).thenReturn(category);
 
+        //Esta simulando o comportamento do get one quando o id existir para poder fazer o update
+        Mockito.when(repository.getOne(existingId)).thenReturn(category);
 
+        //Esta simulando o comportamento get one quando o id não existir e vai retornar ResourceNotFoundExceptions
+        Mockito.when(repository.getOne(nonExistingId)).thenThrow(EntityNotFoundException.class);
 
     }
 
@@ -123,6 +128,28 @@ public class CategoryServiceTest {
         //Assertions
         Assertions.assertNotNull(insert);
         Mockito.verify(repository).save(category);
+
+    }
+
+    @Test
+    public void testUpdateWhenIdExistShouldReturnProduct(){
+
+        CategoryDTO update = service.update(existingId, categoryDTO);
+        update.setName("update");
+
+        Assertions.assertEquals("update",update.getName());
+        Mockito.verify(repository).getOne(existingId);
+
+    }
+
+    @Test
+    public void testUpdateWhenIdDoesNotExistReturnResourceNotFoundExceptions(){
+
+        Assertions.assertThrows(ResourceNotFoundExceptions.class, ()->{
+            service.update(nonExistingId,categoryDTO);
+        });
+
+        Mockito.verify(repository).getOne(nonExistingId);
 
     }
 
