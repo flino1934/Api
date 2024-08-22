@@ -23,8 +23,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.util.List;
 import java.util.Optional;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -71,6 +70,12 @@ public class ClientControllerTest {
 
         //Simulando o insert
         Mockito.when(service.insert(ArgumentMatchers.any())).thenReturn(clientDTO);
+
+        //Simulando o update quando o id não existir
+        Mockito.when(service.update(ArgumentMatchers.eq(existingId),ArgumentMatchers.any())).thenReturn(clientDTO);
+
+        //Simulando o update quando id não existir
+        Mockito.when(service.update(ArgumentMatchers.eq(nonExistingId),ArgumentMatchers.any())).thenThrow(ResourceNotFoundExceptions.class);
 
     }
 
@@ -121,6 +126,39 @@ public class ClientControllerTest {
                         .accept(MediaType.APPLICATION_JSON));
 
         result.andExpect(status().isCreated());
+        result.andExpect(jsonPath("$.id").exists());
+        result.andExpect(jsonPath("$.name").exists());
+        result.andExpect(jsonPath("$.cpf").exists());
+
+    }
+
+    @Test
+    public void testUpdateWhenIdExist() throws Exception{
+
+        String jsonBody = objectMapper.writeValueAsString(clientDTO);
+
+        ResultActions result =
+                mockMvc.perform(put("/api/clients/{id}",existingId)
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        result.andExpect(status().isOk());
+
+
+    }
+    @Test
+    public void testUpdateWhenDoesNotIdExist() throws Exception{
+
+        String jsonBody = objectMapper.writeValueAsString(clientDTO);
+
+        ResultActions result =
+                mockMvc.perform(put("/api/clients/{id}",nonExistingId)
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        result.andExpect(status().isNotFound());
 
     }
 
