@@ -76,8 +76,7 @@ public class ClientService {
 
         try {
 
-            Client clientDTO = repository.getOne(id);
-            repository.delete(clientDTO);
+            repository.deleteById(id);
 
         } catch (EntityNotFoundException e) {
 

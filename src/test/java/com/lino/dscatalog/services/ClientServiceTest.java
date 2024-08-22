@@ -1,9 +1,11 @@
 package com.lino.dscatalog.services;
 
 import com.lino.dscatalog.dto.ClientDTO;
+import com.lino.dscatalog.dto.ProductDTO;
 import com.lino.dscatalog.entities.Client;
 import com.lino.dscatalog.factory.ClientFactory;
 import com.lino.dscatalog.repositories.ClientRepository;
+import com.lino.dscatalog.services.exceptions.DataBaseExceptions;
 import com.lino.dscatalog.services.exceptions.ResourceNotFoundExceptions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +15,7 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -43,7 +46,7 @@ public class ClientServiceTest {
         //Estara fazendo o Arrange
         existingId = 1L;
         nonExistingId = 1000L;
-        dependentId = 22L;
+        dependentId = 2L;
         client = ClientFactory.createClient();
         clientDTO = ClientFactory.createClientDTO();
         page = new PageImpl<>(List.of(client));
@@ -67,6 +70,15 @@ public class ClientServiceTest {
 
         //Simulando o get one para o update quando o id não existir devera retornar ResourceNotFoundExceptions
         Mockito.when(repository.getOne(nonExistingId)).thenThrow(EntityNotFoundException.class);
+
+        //Simulando o delete quando o id existir
+        Mockito.doNothing().when(repository).deleteById(existingId);
+
+        //Simulando o delete quando o não existir deve retornar ResourceNotFoundExceptions
+        Mockito.doThrow(EntityNotFoundException.class).when(repository).deleteById(nonExistingId);
+
+        //Simulando o delete quando o id for dependente retornar DataBaseExceptions
+        Mockito.doThrow(DataIntegrityViolationException.class).when(repository).deleteById(dependentId);
 
     }
 
@@ -136,10 +148,41 @@ public class ClientServiceTest {
     @Test
     public void testUpdateWhenIdDoesNothingExistShouldReturnException() {
 
-        Assertions.assertThrows(ResourceNotFoundExceptions.class,()->{
-           service.update(nonExistingId, clientDTO);
+        Assertions.assertThrows(ResourceNotFoundExceptions.class, () -> {
+            service.update(nonExistingId, clientDTO);
         });
 
     }
+
+    @Test
+    public void testDeleteWhenIdExists() {
+        // Act
+        service.delete(existingId);
+
+        // Assert
+        Mockito.verify(repository).deleteById(existingId);
+    }
+
+    @Test
+    public void testDeleteWhenIdDoesNotExistShouldReturnResourceNotFoundExceptions() {
+
+        Assertions.assertThrows(ResourceNotFoundExceptions.class, () -> {
+            service.delete(nonExistingId);
+        });
+        Mockito.verify(repository).deleteById(nonExistingId);
+
+    }
+
+    @Test
+    public void testDeleteWhenIdDependentShouldReturnDataBaseExceptions() {
+
+        Assertions.assertThrows(DataBaseExceptions.class, () -> {
+            service.delete(dependentId);
+        });
+
+        Mockito.verify(repository).deleteById(dependentId);
+
+    }
+
 
 }
