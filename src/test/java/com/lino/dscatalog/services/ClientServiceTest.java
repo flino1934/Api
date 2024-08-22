@@ -67,11 +67,14 @@ public class ClientServiceTest {
         //Simulando o find by id quando o id não existir
         Mockito.when(repository.findById(nonExistingId)).thenThrow(ResourceNotFoundExceptions.class);
 
+        //Simulando o insert
+        Mockito.when(repository.save(ArgumentMatchers.any())).thenReturn(client);
+
 
     }
 
     @Test
-    public void testFindAllPaged(){
+    public void testFindAllPaged() {
 
         //Arrange
         Pageable pageable = PageRequest.of(0, 10);
@@ -83,10 +86,11 @@ public class ClientServiceTest {
         Assertions.assertNotNull(result);
         Mockito.verify(repository).findAll(pageable);
 
+
     }
 
     @Test
-    public void testFindByIdExistingIdShouldReturnClient(){
+    public void testFindByIdExistingIdShouldReturnClient() {
 
         //Arrange
 
@@ -99,11 +103,24 @@ public class ClientServiceTest {
     }
 
     @Test
-    public void testFindByIdWhenIdDoesNothingExistShouldReturnResourceNotFoundExceptions(){
+    public void testFindByIdWhenIdDoesNothingExistShouldReturnResourceNotFoundExceptions() {
 
-        Assertions.assertThrows(ResourceNotFoundExceptions.class,()->{
-           service.findById(nonExistingId);
+        Assertions.assertThrows(ResourceNotFoundExceptions.class, () -> {
+            service.findById(nonExistingId);
         });
+        Mockito.verify(repository).findById(nonExistingId);
+
+    }
+
+    @Test
+    public void testInsertShouldReturnClient() {
+
+        //Arrange esta sendo feito no beforeach
+
+        ClientDTO result = service.insert(clientDTO);
+
+        Assertions.assertNotNull(result);
+
 
     }
 
