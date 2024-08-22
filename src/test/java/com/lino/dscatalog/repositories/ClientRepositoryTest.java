@@ -1,10 +1,7 @@
 package com.lino.dscatalog.repositories;
 
-import com.lino.dscatalog.entities.Category;
 import com.lino.dscatalog.entities.Client;
-import com.lino.dscatalog.factory.CategoryFactory;
 import com.lino.dscatalog.factory.ClientFactory;
-import com.lino.dscatalog.services.exceptions.ResourceNotFoundExceptions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
