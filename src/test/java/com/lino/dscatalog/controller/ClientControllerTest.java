@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -68,6 +69,9 @@ public class ClientControllerTest {
         //Simulando o findById quando o id não existir
         Mockito.when(service.findById(nonExistingId)).thenThrow(ResourceNotFoundExceptions.class);
 
+        //Simulando o insert
+        Mockito.when(service.insert(ArgumentMatchers.any())).thenReturn(clientDTO);
+
     }
 
     @Test
@@ -102,6 +106,21 @@ public class ClientControllerTest {
                         .accept(MediaType.APPLICATION_JSON));
 
         result.andExpect(status().isNotFound());
+
+    }
+
+    @Test
+    public void testInsertShoulReturnCategory() throws Exception {
+
+        String jsonBody = objectMapper.writeValueAsString(clientDTO);
+
+        ResultActions result =
+                mockMvc.perform(post("/api/clients")
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        result.andExpect(status().isCreated());
 
     }
 
