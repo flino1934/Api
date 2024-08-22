@@ -1,17 +1,9 @@
 package com.lino.dscatalog.services;
 
-import com.lino.dscatalog.dto.CategoryDTO;
 import com.lino.dscatalog.dto.ClientDTO;
-import com.lino.dscatalog.dto.ProductDTO;
-import com.lino.dscatalog.entities.Category;
 import com.lino.dscatalog.entities.Client;
-import com.lino.dscatalog.entities.Product;
-import com.lino.dscatalog.factory.CategoryFactory;
 import com.lino.dscatalog.factory.ClientFactory;
-import com.lino.dscatalog.factory.ProductFactory;
-import com.lino.dscatalog.repositories.CategoryRepository;
 import com.lino.dscatalog.repositories.ClientRepository;
-import com.lino.dscatalog.repositories.ProductRepository;
 import com.lino.dscatalog.services.exceptions.ResourceNotFoundExceptions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -70,6 +62,11 @@ public class ClientServiceTest {
         //Simulando o insert
         Mockito.when(repository.save(ArgumentMatchers.any())).thenReturn(client);
 
+        //Simulando o get one para o update quando o id existir
+        Mockito.when(repository.getOne(existingId)).thenReturn(client);
+
+        //Simulando o get one para o update quando o id não existir devera retornar ResourceNotFoundExceptions
+        Mockito.when(repository.getOne(nonExistingId)).thenThrow(EntityNotFoundException.class);
 
     }
 
@@ -121,9 +118,28 @@ public class ClientServiceTest {
 
         Assertions.assertNotNull(result);
 
+    }
+
+    @Test
+    public void testUpdateWhenIdExistShouldReturnClient() {
+
+        //Arrange
+
+        ClientDTO result = service.update(existingId, clientDTO);
+        result.setName("Felipe ALves Lino");
+
+        Assertions.assertEquals("Felipe ALves Lino", result.getName());
+        Mockito.verify(repository).getOne(existingId);
 
     }
 
+    @Test
+    public void testUpdateWhenIdDoesNothingExistShouldReturnException() {
 
+        Assertions.assertThrows(ResourceNotFoundExceptions.class,()->{
+           service.update(nonExistingId, clientDTO);
+        });
+
+    }
 
 }
