@@ -7,6 +7,7 @@ import com.lino.dscatalog.factory.CategoryFactory;
 import com.lino.dscatalog.factory.ClientFactory;
 import com.lino.dscatalog.services.CategoryService;
 import com.lino.dscatalog.services.ClientService;
+import com.lino.dscatalog.services.exceptions.ResourceNotFoundExceptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ClientController.class)
@@ -60,6 +62,12 @@ public class ClientControllerTest {
         //Simulando o findAllPaged
         Mockito.when(service.findAllPaged(ArgumentMatchers.any())).thenReturn(page);
 
+        //Simulando o findById quando o id existir
+        Mockito.when(service.findById(existingId)).thenReturn(clientDTO);
+
+        //Simulando o findById quando o id não existir
+        Mockito.when(service.findById(nonExistingId)).thenThrow(ResourceNotFoundExceptions.class);
+
     }
 
     @Test
@@ -70,6 +78,31 @@ public class ClientControllerTest {
                         .accept(MediaType.APPLICATION_JSON));
 
         result.andExpect(status().isOk());
+    }
+
+    @Test
+    public void testFindByidWhenIdExistShouldReturnClient() throws Exception {
+
+        ResultActions result =
+                mockMvc.perform(get("/api/clients/{id}",existingId)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        result.andExpect(status().isOk());
+        result.andExpect(jsonPath("$.id").exists());
+        result.andExpect(jsonPath("$.name").exists());
+        result.andExpect(jsonPath("$.cpf").exists());
+
+    }
+
+    @Test
+    public void testFindByidWhenIdDoesNotExistShouldReturnNotFound() throws Exception {
+
+        ResultActions result =
+                mockMvc.perform(get("/api/clients/{id}",nonExistingId)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        result.andExpect(status().isNotFound());
+
     }
 
 }
