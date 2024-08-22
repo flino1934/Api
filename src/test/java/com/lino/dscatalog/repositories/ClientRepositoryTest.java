@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -55,7 +56,7 @@ public class ClientRepositoryTest {
     }
 
     @Test
-    public void testFindByIDShouldReturnClientWhenIdExist(){
+    public void testFindByIDShouldReturnClientWhenIdExist() {
 
         //Arrange
 
@@ -68,7 +69,7 @@ public class ClientRepositoryTest {
     }
 
     @Test
-    public void testFindByIdWhenIdDoesNothingExist(){
+    public void testFindByIdWhenIdDoesNothingExist() {
 
         Optional<Client> result = repository.findById(nonExistingId);
 
@@ -76,5 +77,26 @@ public class ClientRepositoryTest {
 
     }
 
+    @Test
+    public void testDeleteWhenIdExist() {
+
+        repository.deleteById(existingId);
+
+        Optional<Client> result = repository.findById(existingId);
+
+        Assertions.assertTrue(result.isEmpty());
+
+    }
+
+    @Test
+    public void testDeleteWhenDoesNotExistId() {
+
+        Assertions.assertThrows(EmptyResultDataAccessException.class, () -> {
+
+            repository.deleteById(nonExistingId);
+
+        });
+
+    }
 
 }
