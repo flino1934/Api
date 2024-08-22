@@ -95,7 +95,6 @@ public class ClientServiceTest {
         Assertions.assertNotNull(result);
         Mockito.verify(repository).findAll(pageable);
 
-
     }
 
     @Test
