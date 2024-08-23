@@ -63,13 +63,6 @@ Password:
 
 **Certifique-se de que o console do H2 está habilitado nas configurações de seu `application.properties`
 
-## Postman Collection
-
-Pode ser executados os endpoints através da seguinte collection
-
-[Importar coleção no Postman](https://api.postman.com/collections)
-
-
 ## Executando Testes
 
 Para rodar os testes automatizados com JUnit 5, use o seguinte comando:
