@@ -1,3 +1,13 @@
+INSERT INTO tb_user (first_name, last_name, email, password) VALUES ('Felipe', 'Lino', 'f.lino1934@gmail.com', '$2a$10$eACCYoNOHEqXve8aIWT8Nu3PkMXWBaOxJ9aORUYzfMQCbVBIhZ8tG');
+INSERT INTO tb_user (first_name, last_name, email, password) VALUES ('Michaelly Monique', 'Oliveira Di Pardo', 'mica@gmail.com', '$2a$10$eACCYoNOHEqXve8aIWT8Nu3PkMXWBaOxJ9aORUYzfMQCbVBIhZ8tG');
+
+INSERT INTO tb_role (authority) VALUES ('ROLE_OPERATOR');
+INSERT INTO tb_role (authority) VALUES ('ROLE_ADMIN');
+
+INSERT INTO tb_user_role (user_id, role_id) VALUES (1, 1);
+INSERT INTO tb_user_role (user_id, role_id) VALUES (2, 1);
+INSERT INTO tb_user_role (user_id, role_id) VALUES (2, 2);
+
 INSERT INTO tb_category (name, created_At) VALUES ('Livros', now());
 INSERT INTO tb_category (name, created_At) VALUES ('Eletrônicos', now());
 INSERT INTO tb_category (name, created_At) VALUES ('Computadores', now());
