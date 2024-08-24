@@ -6,8 +6,10 @@ import com.lino.dscatalog.entities.Role;
 import com.lino.dscatalog.entities.User;
 import com.lino.dscatalog.repositories.RoleRepository;
 import com.lino.dscatalog.repositories.UserRepository;
+import com.lino.dscatalog.services.exceptions.DataBaseExceptions;
 import com.lino.dscatalog.services.exceptions.ResourceNotFoundExceptions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -86,4 +88,19 @@ public class UserService {
 
     }
 
+    public void delete(Long id) {
+
+        try{
+            repository.deleteById(id);
+        }catch (EmptyResultDataAccessException e){
+
+            throw new ResourceNotFoundExceptions("Id not found!!!");
+
+        }catch (DataIntegrityViolationException e){
+
+            throw new DataBaseExceptions("Databse violation!!");
+
+        }
+
+    }
 }
