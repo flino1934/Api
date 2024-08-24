@@ -18,7 +18,7 @@ public class User implements Serializable {
     private String email;
     private String password;
 
-    @ManyToMany//Muitos para Muitos, um usuario pode ter varias roles assim como uma role pode ter varios usuarios
+    @ManyToMany(fetch = FetchType.EAGER)//Muitos para Muitos, um usuario pode ter varias roles assim como uma role pode ter varios usuarios
     @JoinTable(name = "tb_user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
