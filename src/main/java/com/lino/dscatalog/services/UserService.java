@@ -8,6 +8,7 @@ import com.lino.dscatalog.repositories.RoleRepository;
 import com.lino.dscatalog.repositories.UserRepository;
 import com.lino.dscatalog.services.exceptions.ResourceNotFoundExceptions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -52,6 +53,21 @@ public class UserService {
 
     }
 
+    @Transactional
+    public UserDTO update(Long id, UserDTO dto) {
+
+        try {
+            User entity = repository.getOne(id);
+            copyDtoToEntity(dto, entity);
+
+            return new UserDTO(entity);
+
+        } catch (EmptyResultDataAccessException e) {
+            throw new ResourceNotFoundExceptions("Id Not found excption");
+        }
+
+    }
+
 
     private void copyDtoToEntity(UserDTO dto, User entity) {
 
@@ -69,4 +85,5 @@ public class UserService {
         }
 
     }
+
 }

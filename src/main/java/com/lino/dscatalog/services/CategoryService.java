@@ -55,7 +55,6 @@ public class CategoryService {
 
             Category entity = repository.getOne(id);
             entity.setName(dto.getName());
-            entity = repository.save(entity);
             CategoryDTO categoryDTO = new CategoryDTO(entity);
 
             return categoryDTO;
