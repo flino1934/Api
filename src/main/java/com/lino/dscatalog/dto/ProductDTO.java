@@ -3,6 +3,10 @@ package com.lino.dscatalog.dto;
 import com.lino.dscatalog.entities.Category;
 import com.lino.dscatalog.entities.Product;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.PastOrPresent;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -14,10 +18,14 @@ public class ProductDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long id;
+    @NotBlank(message = "Campo obrigatório")
+    @Size(min = 3, max = 20, message = "o nome deve ter entre 3 e 20 caracteres")
     private String name;
     private String description;
+    @Positive(message = "O Preço deve ser um valor positivo")
     private Double price;
     private String imgUrl;
+    @PastOrPresent(message = "A data não pode ser futura")
     private Instant date;
 
     private List<CategoryDTO> categories = new ArrayList<>();
