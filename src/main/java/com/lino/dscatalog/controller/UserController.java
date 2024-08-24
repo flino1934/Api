@@ -1,6 +1,7 @@
 package com.lino.dscatalog.controller;
 
 import com.lino.dscatalog.dto.UserDTO;
+import com.lino.dscatalog.dto.UserInsertDTO;
 import com.lino.dscatalog.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -34,15 +35,15 @@ public class UserController {
 
     }
 
-    @PostMapping
-    public ResponseEntity<UserDTO> insert(@RequestBody UserDTO dto) {
-
-        dto = service.insert(dto);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(dto.getId()).toUri();
-
-        return ResponseEntity.created(uri).body(dto);
-
-    }
+//    @PostMapping
+//    public ResponseEntity<UserDTO> insert(@RequestBody UserInsertDTO dto) {
+//
+//        dto = service.insert(dto);
+//        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(dto.getId()).toUri();
+//
+//        return ResponseEntity.created(uri).body(dto);
+//
+//    }
 
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> update(@PathVariable Long id, @RequestBody UserDTO dto) {
