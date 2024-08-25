@@ -2,6 +2,7 @@ package com.lino.dscatalog.controller;
 
 import com.lino.dscatalog.dto.UserDTO;
 import com.lino.dscatalog.dto.UserInsertDTO;
+import com.lino.dscatalog.dto.UserUpdateDTO;
 import com.lino.dscatalog.entities.User;
 import com.lino.dscatalog.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,11 +49,10 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> update(@Valid @PathVariable Long id, @RequestBody UserDTO dto) {
+    public ResponseEntity<UserDTO> update(@Valid @PathVariable Long id, @RequestBody UserUpdateDTO dto) {
 
-        dto = service.update(id, dto);
-        return ResponseEntity.ok().body(dto);
-
+       UserDTO newDto = service.update(id, dto);
+        return ResponseEntity.ok().body(newDto);
 
     }
 
