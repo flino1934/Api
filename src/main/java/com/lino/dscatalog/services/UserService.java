@@ -67,7 +67,7 @@ public class UserService {
         try {
             User entity = repository.getOne(id);
             copyDtoToEntity(dto, entity);
-
+            entity = repository.save(entity);
             return new UserDTO(entity);
 
         } catch (EmptyResultDataAccessException e) {
