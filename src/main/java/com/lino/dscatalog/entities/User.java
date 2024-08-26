@@ -1,14 +1,20 @@
 package com.lino.dscatalog.entities;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "tb_user")
-public class User implements Serializable {
+public class User implements UserDetails, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +25,8 @@ public class User implements Serializable {
     private String email;
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER)//Muitos para Muitos, um usuario pode ter varias roles assim como uma role pode ter varios usuarios
+    @ManyToMany(fetch = FetchType.EAGER)
+//Muitos para Muitos, um usuario pode ter varias roles assim como uma role pode ter varios usuarios
     @JoinTable(name = "tb_user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
@@ -68,10 +75,6 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
     public void setPassword(String password) {
         this.password = password;
     }
@@ -91,5 +94,43 @@ public class User implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {//Vai retornar uma lista com os perfis que o usuario tem
+
+        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getAuthority()))
+                .collect(Collectors.toList());
+
+    }
+
+    public String getPassword() {
+        return password;
+    }//Retorna a senha
+
+    @Override
+    public String getUsername() {//Pega o usuario, que vai ser no nosso caso o email
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {//testa se a conta não esta expirada
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {//Verifica se o usuario não esta bloqueado
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {//Verifica se a credencial não expirou
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {//Verifica se o usuario esta habilitado
+        return true;
     }
 }
