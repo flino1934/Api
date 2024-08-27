@@ -21,6 +21,7 @@ import java.util.Arrays;
 @Configuration
 @EnableAuthorizationServer
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
+    //Essa classe vai ser responsavél por verificar se o usuario pode se autenticar ou não
 
     @Value("${security.oauth2.client.client-id}")
     private String clientId;
