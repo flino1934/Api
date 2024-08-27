@@ -10,6 +10,7 @@ import com.lino.dscatalog.services.CategoryService;
 import com.lino.dscatalog.services.ProductService;
 import com.lino.dscatalog.services.exceptions.DataBaseExceptions;
 import com.lino.dscatalog.services.exceptions.ResourceNotFoundExceptions;
+import com.lino.dscatalog.util.TokenUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
@@ -41,6 +42,13 @@ public class CategoryControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private TokenUtil tokenUtil;
+
+    private String operatorUsername;
+    private String operatorPassword;
+    private String adminUsername;
+    private String adminPassword;
     private long existingId;
     private long nonExistingId;
     private long dependentId;
@@ -50,6 +58,12 @@ public class CategoryControllerTest {
 
     @BeforeEach
     void setUp() throws Exception {
+
+        //Fazendo autenticação
+        operatorUsername = "f.lino1934@hotmail.com";
+        operatorPassword  = "123456";
+        adminUsername = "mica@gmail.com";
+        adminPassword = "123456";
 
         //Estara fazendo o Arrange
         existingId = 1L;
@@ -91,6 +105,7 @@ public class CategoryControllerTest {
 
     @Test
     public void testFindAllPagedShouldReturnPaged() throws Exception {
+
 
         ResultActions result =
                 mockMvc.perform(get("/api/categories")
