@@ -6,6 +6,7 @@ import com.lino.dscatalog.entities.User;
 import com.lino.dscatalog.factory.UserFactory;
 import com.lino.dscatalog.repositories.ClientRepository;
 import com.lino.dscatalog.repositories.UserRepository;
+import com.lino.dscatalog.services.exceptions.ResourceNotFoundExceptions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)//usado para fazer teste do service
 public class UserServiceTest {
@@ -42,12 +44,19 @@ public class UserServiceTest {
         existingId = 1L;
         nonExistingId = 1000L;
         user = UserFactory.createUser();
+        userDTO = UserFactory.createUserDTO();
         page = new PageImpl<>(List.of(user));
 
         //Configurando o comprtamento do repository
 
         //Esta simulando o comportamento do repository do find all paged
         Mockito.when(repository.findAll((Pageable) ArgumentMatchers.any())).thenReturn(page);
+
+        //Simulando o comportamento do find by id when id exist
+        Mockito.when(repository.findById(existingId)).thenReturn(Optional.of(user));
+
+        //Simulando o comportamento do find by id when não id exist
+        Mockito.when(repository.findById(nonExistingId)).thenThrow(ResourceNotFoundExceptions.class);
 
     }
 
@@ -63,6 +72,32 @@ public class UserServiceTest {
         //Assert
         Assertions.assertNotNull(result);
         Mockito.verify(repository).findAll(pageable);
+
+    }
+
+    @Test
+    public void testFindByIdWhenIdExist(){
+
+        //Arrange esta sendo feito no beforeach
+
+        //ACT
+        UserDTO result = service.findById(existingId);
+
+        //Assertion
+
+        Assertions.assertNotNull(result);
+        Mockito.verify(repository).findById(existingId);
+
+    }
+    @Test
+    public void testFindByIdWhenIdDoesNotExist(){
+
+        //Arrange esta sendo feito no beforeach
+
+        //Assertion
+        Assertions.assertThrows(ResourceNotFoundExceptions.class, ()->{
+           service.findById(nonExistingId);
+        });
 
     }
 }
