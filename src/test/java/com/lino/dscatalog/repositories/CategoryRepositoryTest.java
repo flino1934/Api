@@ -14,7 +14,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 
-@DataJpaTest
+@DataJpaTest//Usado para testar a camada de repository
 public class CategoryRepositoryTest {
 
     private long existingId;

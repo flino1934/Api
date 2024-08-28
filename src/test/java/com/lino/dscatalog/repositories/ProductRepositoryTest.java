@@ -11,7 +11,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 
 import java.util.Optional;
 
-@DataJpaTest//Usado para testar a camada de controller
+@DataJpaTest//Usado para testar a camada de repository
 public class ProductRepositoryTest {
 
     private long existingId;

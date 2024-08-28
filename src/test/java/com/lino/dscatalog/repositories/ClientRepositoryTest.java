@@ -14,13 +14,11 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 
-@DataJpaTest
+@DataJpaTest//Usado para testar a camada de repository
 public class ClientRepositoryTest {
 
     private long existingId;
     private long nonExistingId;
-    private long dependentId;
-    private long countTotalProducts;
 
     @Autowired
     private ClientRepository repository;
@@ -33,8 +31,6 @@ public class ClientRepositoryTest {
         //Estara fazendo o Arrange
         existingId = 1L;
         nonExistingId = 1000L;
-        dependentId = 3L;
-        countTotalProducts = 25L;
         client = ClientFactory.createClient();
     }
 
