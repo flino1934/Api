@@ -146,7 +146,6 @@ public class CategoryControllerTest {
     public void testInsertShoulReturnCategory() throws Exception {
 
         String accesToken = tokenUtil.obtainAccessToken(mockMvc,adminUsername,adminPassword);
-
         String jsonBody = objectMapper.writeValueAsString(categoryDTO);
 
         ResultActions result =
@@ -163,8 +162,11 @@ public class CategoryControllerTest {
     @Test
     public void testDeleteWhenIdExist() throws Exception{
 
+        String accesToken = tokenUtil.obtainAccessToken(mockMvc,adminUsername,adminPassword);
+
         ResultActions result =
                 mockMvc.perform(delete("/api/categories/{id}", existingId)
+                        .header("Authorization","Bearer " +accesToken)
                         .accept(MediaType.APPLICATION_JSON));
 
         result.andExpect(status().isNoContent());
@@ -174,8 +176,11 @@ public class CategoryControllerTest {
     @Test
     public void testDeleteWhenIdDoesNotExistShouldReturnResourceNotFoundExceptions() throws Exception{
 
+        String accesToken = tokenUtil.obtainAccessToken(mockMvc,adminUsername,adminPassword);
+
         ResultActions result =
                 mockMvc.perform(delete("/api/categories/{id}", nonExistingId)
+                        .header("Authorization","Bearer " +accesToken)
                         .accept(MediaType.APPLICATION_JSON));
 
         result.andExpect(status().isNotFound());
@@ -184,10 +189,12 @@ public class CategoryControllerTest {
     @Test
     public void testDeleteWhenIdDependentShouldReturnException() throws Exception{
 
+        String accesToken = tokenUtil.obtainAccessToken(mockMvc,adminUsername,adminPassword);
+
         ResultActions result =
                 mockMvc.perform(delete("/api/categories/{id}", dependentId)
+                        .header("Authorization","Bearer " +accesToken)
                         .accept(MediaType.APPLICATION_JSON));
-
         result.andExpect(status().isBadRequest());
 
     }
@@ -195,10 +202,12 @@ public class CategoryControllerTest {
     @Test
     public void testUpdateWhenIdExist() throws Exception{
 
+        String accesToken = tokenUtil.obtainAccessToken(mockMvc,adminUsername,adminPassword);
         String jsonBody = objectMapper.writeValueAsString(categoryDTO);
 
         ResultActions result =
                 mockMvc.perform(put("/api/categories/{id}",existingId)
+                        .header("Authorization","Bearer " +accesToken)
                         .content(jsonBody)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
@@ -211,11 +220,12 @@ public class CategoryControllerTest {
     @Test
     public void testUpdateWhenIdDoesNothingExistShoulReturnThrowResourceNotFoundExceptions() throws Exception{
 
-
+        String accesToken = tokenUtil.obtainAccessToken(mockMvc,adminUsername,adminPassword);
         String jsonBody = objectMapper.writeValueAsString(categoryDTO);
 
         ResultActions result =
                 mockMvc.perform(put("/api/categories/{id}",nonExistingId)
+                        .header("Authorization","Bearer " +accesToken)
                         .content(jsonBody)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
