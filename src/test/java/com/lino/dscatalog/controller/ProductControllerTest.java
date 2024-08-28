@@ -154,6 +154,24 @@ public class ProductControllerTest {
 
     }
     @Test
+    public void updateShouldReturnUnprocecleEntityWhenFielName() throws Exception {
+
+        String accesToken = tokenUtil.obtainAccessToken(mockMvc,adminUsername,adminPassword);
+        productDTO.setName("Ps5 super pro slim premium plus");
+        String jsonBody = objectMapper.writeValueAsString(productDTO);
+
+        ResultActions result =
+                mockMvc.perform(put("/api/products/{id}", existingId)
+                        .header("Authorization","Bearer " +accesToken)
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        result.andExpect(status().isUnprocessableEntity());
+
+
+    }
+    @Test
     public void updateShouldReturnNotFoundWhenIdDoesNotExist() throws Exception {
 
         String accesToken = tokenUtil.obtainAccessToken(mockMvc,adminUsername,adminPassword);
@@ -187,6 +205,24 @@ public class ProductControllerTest {
         result.andExpect(jsonPath("$.id").exists());
         result.andExpect(jsonPath("$.name").exists());
         result.andExpect(jsonPath("$.description").exists());
+
+    }
+    @Test
+    public void testInsertShouldReturnunprocebleEntity() throws Exception {
+
+        String accesToken = tokenUtil.obtainAccessToken(mockMvc,adminUsername,adminPassword);
+        productDTO.setName("Ps5 super pro slim premium plus");
+        String jsonBody = objectMapper.writeValueAsString(productDTO);
+
+        ResultActions result =
+                mockMvc.perform(post("/api/products")
+                        .header("Authorization","Bearer " +accesToken)
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        result.andExpect(status().isUnprocessableEntity());
+
 
     }
 
