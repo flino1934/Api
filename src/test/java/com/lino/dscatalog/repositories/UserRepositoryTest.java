@@ -2,13 +2,13 @@ package com.lino.dscatalog.repositories;
 
 import com.lino.dscatalog.entities.Client;
 import com.lino.dscatalog.entities.User;
-import com.lino.dscatalog.factory.ClientFactory;
 import com.lino.dscatalog.factory.UserFactory;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -81,6 +81,28 @@ public class UserRepositoryTest {
         Assertions.assertEquals("mica@gmail.com", find.getEmail());
         Assertions.assertEquals("Michaelly Monique", find.getFirstName());
         Assertions.assertEquals("Oliveira Di Pardo",user.getLastName());
+
+    }
+
+    @Test
+    public void testDeleteWhenIdExist() {
+
+        repository.deleteById(existingId);
+
+        Optional<User> result = repository.findById(existingId);
+
+        Assertions.assertTrue(result.isEmpty());
+
+    }
+
+    @Test
+    public void testDeleteWhenDoesNotExistId() {
+
+        Assertions.assertThrows(EmptyResultDataAccessException.class, () -> {
+
+            repository.deleteById(nonExistingId);
+
+        });
 
     }
 
