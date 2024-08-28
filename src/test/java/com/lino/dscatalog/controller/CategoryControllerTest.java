@@ -145,10 +145,13 @@ public class CategoryControllerTest {
     @Test
     public void testInsertShoulReturnCategory() throws Exception {
 
+        String accesToken = tokenUtil.obtainAccessToken(mockMvc,adminUsername,adminPassword);
+
         String jsonBody = objectMapper.writeValueAsString(categoryDTO);
 
         ResultActions result =
                 mockMvc.perform(post("/api/categories")
+                        .header("Authorization","Bearer " +accesToken)
                         .content(jsonBody)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
