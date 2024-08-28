@@ -50,8 +50,6 @@ public class CategoryControllerTest {
     @Autowired
     private TokenUtil tokenUtil;
 
-    private String operatorUsername;
-    private String operatorPassword;
     private String adminUsername;
     private String adminPassword;
     private long existingId;
@@ -65,8 +63,6 @@ public class CategoryControllerTest {
     void setUp() throws Exception {
 
         //Fazendo autenticação
-        operatorUsername = "f.lino1934@hotmail.com";
-        operatorPassword  = "123456";
         adminUsername = "mica@gmail.com";
         adminPassword = "123456";
 

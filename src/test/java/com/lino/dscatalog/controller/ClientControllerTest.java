@@ -9,17 +9,21 @@ import com.lino.dscatalog.services.CategoryService;
 import com.lino.dscatalog.services.ClientService;
 import com.lino.dscatalog.services.exceptions.DataBaseExceptions;
 import com.lino.dscatalog.services.exceptions.ResourceNotFoundExceptions;
+import com.lino.dscatalog.util.TokenUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +32,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(ClientController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
+@Transactional
 public class ClientControllerTest {
 
 
@@ -41,15 +47,23 @@ public class ClientControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private TokenUtil tokenUtil;
+
     private long existingId;
     private long nonExistingId;
     private long dependentId;
     private PageImpl<ClientDTO> page;
-
     private ClientDTO clientDTO;
+    private String adminUsername;
+    private String adminPassword;
 
     @BeforeEach
     void setUp() throws Exception {
+
+        //Fazendo autenticação
+        adminUsername = "mica@gmail.com";
+        adminPassword = "123456";
 
         //Estara fazendo o Arrange
         existingId = 1L;
@@ -127,10 +141,12 @@ public class ClientControllerTest {
     @Test
     public void testInsertShoulReturnCategory() throws Exception {
 
+        String accesToken = tokenUtil.obtainAccessToken(mockMvc,adminUsername,adminPassword);
         String jsonBody = objectMapper.writeValueAsString(clientDTO);
 
         ResultActions result =
                 mockMvc.perform(post("/api/clients")
+                        .header("Authorization","Bearer " +accesToken)
                         .content(jsonBody)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
@@ -145,11 +161,13 @@ public class ClientControllerTest {
     @Test
     public void testUpdateWhenIdExist() throws Exception{
 
+        String accesToken = tokenUtil.obtainAccessToken(mockMvc,adminUsername,adminPassword);
         String jsonBody = objectMapper.writeValueAsString(clientDTO);
 
         ResultActions result =
                 mockMvc.perform(put("/api/clients/{id}",existingId)
                         .content(jsonBody)
+                        .header("Authorization","Bearer " +accesToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
 
@@ -160,10 +178,12 @@ public class ClientControllerTest {
     @Test
     public void testUpdateWhenDoesNotIdExist() throws Exception{
 
+        String accesToken = tokenUtil.obtainAccessToken(mockMvc,adminUsername,adminPassword);
         String jsonBody = objectMapper.writeValueAsString(clientDTO);
 
         ResultActions result =
                 mockMvc.perform(put("/api/clients/{id}",nonExistingId)
+                        .header("Authorization","Bearer " +accesToken)
                         .content(jsonBody)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON));
@@ -174,8 +194,11 @@ public class ClientControllerTest {
     @Test
     public void testDeleteWhenIdExist() throws Exception{
 
+        String accesToken = tokenUtil.obtainAccessToken(mockMvc,adminUsername,adminPassword);
+
         ResultActions result =
                 mockMvc.perform(delete("/api/clients/{id}", existingId)
+                        .header("Authorization","Bearer " +accesToken)
                         .accept(MediaType.APPLICATION_JSON));
 
         result.andExpect(status().isNoContent());
@@ -184,8 +207,11 @@ public class ClientControllerTest {
     @Test
     public void testDeleteWhenIdDoesnotExist() throws Exception{
 
+        String accesToken = tokenUtil.obtainAccessToken(mockMvc,adminUsername,adminPassword);
+
         ResultActions result =
                 mockMvc.perform(delete("/api/clients/{id}", nonExistingId)
+                        .header("Authorization","Bearer " +accesToken)
                         .accept(MediaType.APPLICATION_JSON));
 
         result.andExpect(status().isNotFound());
@@ -194,13 +220,15 @@ public class ClientControllerTest {
     @Test
     public void testDeleteWhenIdDependent() throws Exception{
 
+        String accesToken = tokenUtil.obtainAccessToken(mockMvc,adminUsername,adminPassword);
+
         ResultActions result =
                 mockMvc.perform(delete("/api/clients/{id}", dependentId)
+                        .header("Authorization","Bearer " +accesToken)
                         .accept(MediaType.APPLICATION_JSON));
 
         result.andExpect(status().isBadRequest());
 
     }
-
 
 }
