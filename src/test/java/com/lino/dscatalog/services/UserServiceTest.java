@@ -4,7 +4,6 @@ import com.lino.dscatalog.dto.*;
 import com.lino.dscatalog.entities.Role;
 import com.lino.dscatalog.entities.User;
 import com.lino.dscatalog.factory.UserFactory;
-import com.lino.dscatalog.repositories.ClientRepository;
 import com.lino.dscatalog.repositories.RoleRepository;
 import com.lino.dscatalog.repositories.UserRepository;
 import com.lino.dscatalog.services.exceptions.DataBaseExceptions;
