@@ -7,6 +7,7 @@ import com.lino.dscatalog.factory.UserFactory;
 import com.lino.dscatalog.repositories.ClientRepository;
 import com.lino.dscatalog.repositories.RoleRepository;
 import com.lino.dscatalog.repositories.UserRepository;
+import com.lino.dscatalog.services.exceptions.DataBaseExceptions;
 import com.lino.dscatalog.services.exceptions.ResourceNotFoundExceptions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +17,7 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -40,6 +42,7 @@ public class UserServiceTest {
     private BCryptPasswordEncoder passwordEncoder;
     private long existingId;
     private long nonExistingId;
+    private long dependeteId;
     private PageImpl<User> page;
     private User user;
     private UserInsertDTO userInsertDTO;
@@ -53,6 +56,7 @@ public class UserServiceTest {
         //Estara fazendo o Arrange
         existingId = 1L;
         nonExistingId = 1000L;
+        dependeteId = 3L;
         user = UserFactory.createUser();
         userDTO = UserFactory.createUserDTO();
         userInsertDTO = UserFactory.createUserInsert();
@@ -86,7 +90,14 @@ public class UserServiceTest {
         //Simulação do get one do User quando o id não existir
         Mockito.when(repository.getOne(nonExistingId)).thenThrow(EmptyResultDataAccessException.class);
 
+        //Simulação do delete quando o id existir
+        Mockito.doNothing().when(repository).deleteById(existingId);
 
+        //Simulação delete quando id não existir
+        Mockito.doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(nonExistingId);
+
+        //Simulação delete quando id for dependente
+        Mockito.doThrow(DataIntegrityViolationException.class).when(repository).deleteById(dependeteId);
 
     }
 
@@ -167,6 +178,42 @@ public class UserServiceTest {
        Assertions.assertThrows(ResourceNotFoundExceptions.class,()->{
           service.update(nonExistingId,userUpdateDTO);
        });
+
+    }
+
+    @Test
+    public void testDeleteByIdWhenIdExist(){
+
+        //Arrange esta sendo feito no beforeach
+
+        //Act
+        service.delete(existingId);
+        Mockito.verify(repository).deleteById(existingId);
+
+
+    }
+    @Test
+    public void testDeleteByIdWhenIdDoesNotExistShouldReturnResourceNotFoundExceptions(){
+
+        //Arrange esta sendo feito no beforeach
+
+        //Act
+        Assertions.assertThrows(ResourceNotFoundExceptions.class,()->{
+           service.delete(nonExistingId);
+        });
+        Mockito.verify(repository).deleteById(nonExistingId);
+
+    }
+    @Test
+    public void testDeleteByIdWhenDependentIdShouldReturnDataBaseExceptions(){
+
+        //Arrange esta sendo feito no beforeach
+
+        //Act
+        Assertions.assertThrows(DataBaseExceptions.class,()->{
+           service.delete(dependeteId);
+        });
+        Mockito.verify(repository).deleteById(dependeteId);
 
     }
 }

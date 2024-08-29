@@ -12,6 +12,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.Optional;
 
@@ -50,7 +51,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    public void testFindByIdWhenIdExist(){
+    public void testFindByIdWhenIdExist() {
 
         //Arrange and  Act
         Optional<User> obj = repository.findById(existingId);
@@ -61,7 +62,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    public void testFindByIdWhenIdDoesnothingExist(){
+    public void testFindByIdWhenIdDoesnothingExist() {
 
         //Arrange and  Act
         Optional<User> obj = repository.findById(nonExistingId);
@@ -71,7 +72,7 @@ public class UserRepositoryTest {
     }
 
     @Test
-    public void testFindByEmailReturnUser(){
+    public void testFindByEmailReturnUser() {
 
         //Arrange and act
 
@@ -80,7 +81,18 @@ public class UserRepositoryTest {
         //Assertions
         Assertions.assertEquals("mica@gmail.com", find.getEmail());
         Assertions.assertEquals("Michaelly Monique", find.getFirstName());
-        Assertions.assertEquals("Oliveira Di Pardo",user.getLastName());
+        Assertions.assertEquals("Oliveira Di Pardo", user.getLastName());
+
+    }
+
+    @Test
+    public void testFindByEmailDoesNotExistReturnUsernameNotFoundException() {
+
+        //Arrange and act
+
+        User find = repository.findByEmail("fe@gmail.com");
+
+        Assertions.assertNull(find);
 
     }
 
