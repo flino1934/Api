@@ -1,9 +1,6 @@
 package com.lino.dscatalog.services;
 
-import com.lino.dscatalog.dto.CategoryDTO;
-import com.lino.dscatalog.dto.ClientDTO;
-import com.lino.dscatalog.dto.UserDTO;
-import com.lino.dscatalog.dto.UserInsertDTO;
+import com.lino.dscatalog.dto.*;
 import com.lino.dscatalog.entities.Role;
 import com.lino.dscatalog.entities.User;
 import com.lino.dscatalog.factory.UserFactory;
@@ -19,6 +16,7 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -45,6 +43,7 @@ public class UserServiceTest {
     private PageImpl<User> page;
     private User user;
     private UserInsertDTO userInsertDTO;
+    private UserUpdateDTO userUpdateDTO;
     private UserDTO userDTO;
     private Role role;
 
@@ -57,6 +56,7 @@ public class UserServiceTest {
         user = UserFactory.createUser();
         userDTO = UserFactory.createUserDTO();
         userInsertDTO = UserFactory.createUserInsert();
+        userUpdateDTO = UserFactory.createUserUpdate();
         page = new PageImpl<>(List.of(user));
         role = new Role(2L, "ROLE_ADMIN");
 
@@ -79,6 +79,14 @@ public class UserServiceTest {
 
         // Simulação do passwordEncoder.encode()
         Mockito.when(passwordEncoder.encode(ArgumentMatchers.anyString())).thenReturn("encodedPassword");
+
+        //Simulação do get one do User quando o id existir
+        Mockito.when(repository.getOne(existingId)).thenReturn(user);
+
+        //Simulação do get one do User quando o id não existir
+        Mockito.when(repository.getOne(nonExistingId)).thenThrow(EmptyResultDataAccessException.class);
+
+
 
     }
 
@@ -133,6 +141,32 @@ public class UserServiceTest {
         //Assertions
         Assertions.assertNotNull(result);
         Mockito.verify(repository, Mockito.times(1)).save(Mockito.any(User.class)); // Verifica se o save foi chamado uma vez
+
+    }
+
+    @Test
+    public void testUpdateWhenIdExist(){
+
+        //Arrange esta sendo feito no beforeach
+
+        //ACT
+        UserDTO result = service.update(existingId, userUpdateDTO);
+        result.setLastName("Lino");
+
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals("Lino",result.getLastName());
+        Mockito.verify(repository, Mockito.times(1)).save(Mockito.any(User.class)); // Verifica se o save foi chamado uma vez
+
+    }
+    @Test
+    public void testUpdateWhenIdDoesNotExist(){
+
+        //Arrange esta sendo feito no beforeach
+
+        //ACT
+       Assertions.assertThrows(ResourceNotFoundExceptions.class,()->{
+          service.update(nonExistingId,userUpdateDTO);
+       });
 
     }
 }

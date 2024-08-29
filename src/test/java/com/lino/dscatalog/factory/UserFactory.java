@@ -3,6 +3,7 @@ package com.lino.dscatalog.factory;
 import com.lino.dscatalog.dto.RoleDTO;
 import com.lino.dscatalog.dto.UserDTO;
 import com.lino.dscatalog.dto.UserInsertDTO;
+import com.lino.dscatalog.dto.UserUpdateDTO;
 import com.lino.dscatalog.entities.Role;
 import com.lino.dscatalog.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ public class UserFactory {
 
     public static User createUser() {
         User user = new User(null, "Michaelly Monique", "Oliveira Di Pardo", "mica@gmail.com", "$2a$10$eACCYoNOHEqXve8aIWT8Nu3PkMXWBaOxJ9aORUYzfMQCbVBIhZ8tG");
+        user.getRoles().add(new Role(1L,"ROLE_OPERATOR"));
         user.getRoles().add(new Role(2L,"ROLE_ADMIN"));
         return user;
     }
@@ -43,10 +45,25 @@ public class UserFactory {
 
         // Adicionando roles ao UserInsertDTO
         Set<RoleDTO> roles = new HashSet<>();
-        roles.add(new RoleDTO(1L, "ROLE_USER"));  // Adiciona a role de usuário
-        roles.add(new RoleDTO(2L, "ROLE_ADMIN")); // Adiciona a role de admin (exemplo)
+        roles.add(new RoleDTO(1L, "ROLE_USER"));
+        roles.add(new RoleDTO(2L, "ROLE_ADMIN"));
         userInsertDTO.getRoles().addAll(roles);
 
         return userInsertDTO;
     }
+    public static UserUpdateDTO createUserUpdate() {
+        UserUpdateDTO userUpdateDTO = new UserUpdateDTO();
+        userUpdateDTO.setFirstName("Michaelly Monique");
+        userUpdateDTO.setLastName("Oliveira Di Pardo");
+        userUpdateDTO.setEmail("mica@gmail.com");
+
+        // Adicionando roles ao UserUpdateDTO
+        Set<RoleDTO> roles = new HashSet<>();
+        roles.add(new RoleDTO(1L, "ROLE_OPERATOR"));
+        roles.add(new RoleDTO(2L, "ROLE_ADMIN"));
+        userUpdateDTO.getRoles().addAll(roles);
+
+        return userUpdateDTO;
+    }
+
 }
