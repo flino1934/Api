@@ -23,6 +23,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -98,6 +99,9 @@ public class UserServiceTest {
 
         //Simulação delete quando id for dependente
         Mockito.doThrow(DataIntegrityViolationException.class).when(repository).deleteById(dependeteId);
+
+        //Simulação do find by email
+        Mockito.when(repository.findByEmail(user.getEmail())).thenReturn(user);
 
     }
 
@@ -214,6 +218,24 @@ public class UserServiceTest {
            service.delete(dependeteId);
         });
         Mockito.verify(repository).deleteById(dependeteId);
+
+    }
+
+    @Test
+    public void testFindByEmail(){
+
+        var find = service.loadUserByUsername(user.getEmail());
+        Assertions.assertNotNull(find);
+        Assertions.assertEquals("mica@gmail.com",find.getUsername());
+
+    }
+    @Test
+    public void testFindByEmailDoesNotExistReturnThrowsUsernameNotFoundException(){
+
+    Assertions.assertThrows(UsernameNotFoundException.class, ()->{
+        service.loadUserByUsername("fe@gmail.com");
+    });
+
 
     }
 }
