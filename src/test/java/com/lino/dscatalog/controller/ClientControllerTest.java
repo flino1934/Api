@@ -1,11 +1,8 @@
 package com.lino.dscatalog.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lino.dscatalog.dto.CategoryDTO;
 import com.lino.dscatalog.dto.ClientDTO;
-import com.lino.dscatalog.factory.CategoryFactory;
 import com.lino.dscatalog.factory.ClientFactory;
-import com.lino.dscatalog.services.CategoryService;
 import com.lino.dscatalog.services.ClientService;
 import com.lino.dscatalog.services.exceptions.DataBaseExceptions;
 import com.lino.dscatalog.services.exceptions.ResourceNotFoundExceptions;
@@ -16,7 +13,6 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
@@ -36,7 +32,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Transactional
 public class ClientControllerTest {
-
 
     @Autowired
     private MockMvc mockMvc;

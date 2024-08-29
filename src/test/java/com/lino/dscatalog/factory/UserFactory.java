@@ -27,12 +27,6 @@ public class UserFactory {
         return new UserDTO(user);
     }
 
-    // Método adicional para criar um UserDTO com ID, se necessário para o teste
-    public static UserDTO createUserDTOWithId() {
-        User user = new User(2L, "Michaelly Monique", "Oliveira Di Pardo", "mica@gmail.com", "$2a$10$eACCYoNOHEqXve8aIWT8Nu3PkMXWBaOxJ9aORUYzfMQCbVBIhZ8tG");
-        user.getRoles().add(new Role(2L,"ROLE_ADMIN"));
-        return new UserDTO(user);
-    }
     public static UserInsertDTO createUserInsert() {
 
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();

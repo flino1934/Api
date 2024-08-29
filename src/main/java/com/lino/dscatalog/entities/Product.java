@@ -1,6 +1,5 @@
 package com.lino.dscatalog.entities;
 
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.Instant;
