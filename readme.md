@@ -1,6 +1,6 @@
 # API DS-Catalog
 
-Esta API é responsável pela gestão de processos, incluindo operações CRUD de clientes, produtos e categorias. A aplicação utiliza JPA para mapeamento de dados e o banco de dados H2 para armazenamento.
+Esta API é responsável pela gestão de processos, incluindo operações CRUD de clientes, produtos, categorias e usuarios. A aplicação utiliza JPA para mapeamento de dados e o banco de dados H2 para armazenamento.
 
 ## Tecnologias Utilizadas
 
@@ -9,6 +9,8 @@ Esta API é responsável pela gestão de processos, incluindo operações CRUD d
 - Maven
 - JPA
 - JUnit 5
+- Spring security
+- OAuth2
 
 ## Pré-requisitos
 
@@ -75,26 +77,37 @@ mvn test
 - Lista com os principais endpoints da API.
 
 ```markdown
-Aqui estão os principais endpoints disponíveis na API:
+Aqui estão os principais endpoints disponíveis na API, todas as operações GET exceto de usuarios não requer autentiação para realizar as demais requer que o usuario realize a autenticação:
 
-Clientes
+Autenticação:
+POST /oauth/token: autentica o usuario email e senha
 
+Clientes:
 GET /api/clients: Lista todos os clientes
 POST /api/clients: Cria um novo cliente
 GET /api/clients/{id}: Busca um cliente por ID
 PUT /api/clients/{id}: Atualiza um cliente existente
 DELETE /api/clients/{id}: Remove um cliente
-Produtos
 
+Produtos:
 GET /api/products: Lista todos os produtos
 POST /api/products: Cria um novo produto
 GET /api/products/{id}: Busca um produto por ID
 PUT /api/products/{id}: Atualiza um produto existente
 DELETE /api/products/{id}: Remove um produto
-Categorias
 
+Categorias:
 GET /api/categories: Lista todas as categorias
 POST /api/categories: Cria uma nova categoria
 GET /api/categories/{id}: Busca uma categoria por ID
 PUT /api/categories/{id}: Atualiza uma categoria existente
 DELETE /api/categories/{id}: Remove uma categoria
+
+Usuarios:
+GET /api/users: Lista todas as categorias
+POST /api/users: Cria uma nova categoria
+GET /api/users/{id}: Busca uma categoria por ID
+PUT /api/users/{id}: Atualiza uma categoria existente
+DELETE /api/users/{id}: Remove uma categoria
+
+
